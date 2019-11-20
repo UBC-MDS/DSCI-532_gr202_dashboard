@@ -6,11 +6,11 @@ All contributors to this repository are required to conform to the Code of Condu
 # Expected Behavior
 All participants in our events and communications are expected to show respect and courtesy to others. All interactions should be professional regardless of platform: either online or in-person. In order to foster a positive and professional learning environment we encourage the following kinds of behaviours in all team meetings and communications:
 
-- Use welcoming and inclusive language
-- Be respectful of different viewpoints and experiences
-- Gracefully accept constructive criticism
-- Focus on what is best for the community
-- Show courtesy and respect towards other community members
+- use welcoming and inclusive language
+- be respectful of different viewpoints and experiences
+- gracefully accept constructive criticism
+- focus on what is best for the team
+- show courtesy and respect towards other team members
 
 # Unacceptable Behavior
 Examples of unacceptable behavior by participants at team meetings or through team communications:
@@ -26,11 +26,12 @@ Examples of unacceptable behavior by participants at team meetings or through te
 - sexist, racist, homophobic, transphobic, ableist, or exclusionary jokes
 - excessive swearing
 - incitement to violence, suicide, or self-harm
-- continuing to initiate interaction (including photography or recording) with someone after being asked to stop publication of private communication without consent
+- continuing to initiate interaction (including photography or recording) with someone after being asked to stop 
+- publication of private communication without consent
 
 # Consequences of Unacceptable Behavior
 Participants who are asked to stop any inappropriate behavior are expected to comply immediately. This applies to all team meetings and communications, either online or in-person. If a participant engages in behavior that violates this code of conduct, the team may warn the offender and or investigate the Code of Conduct violation and impose appropriate sanctions.
 
 
-Attribution
+Attribution:
 Derived from the DSCI 100 Code of Conduct
