@@ -30,7 +30,7 @@ Examples of unacceptable behavior by participants at team meetings or through te
 - publication of private communication without consent
 
 # Consequences of Unacceptable Behavior
-Participants who are asked to stop any inappropriate behavior are expected to comply immediately. This applies to all team meetings and communications, either online or in-person. If a participant engages in behavior that violates this code of conduct, the team may warn the offender and or investigate the Code of Conduct violation and impose appropriate sanctions.
+Participants who are asked to stop any inappropriate behavior are expected to comply immediately. This applies to all team meetings and communications, either online or in-person. If a participant engages in behavior that violates this code of conduct, the team may warn the offender and/or investigate the Code of Conduct violation and impose appropriate sanctions.
 
 
 Attribution:
