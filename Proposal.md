@@ -8,10 +8,10 @@ Our app will be based on a dataset of approximately 260,000 crime reports collec
 
 ### Section 3: Research questions and usage scenarios
 **Questions**:
-- Which neighbourhoods in Boston have the highest crime rate? (choropleth map)
-- What is the most common crime committed in Boston? (type of crime bar graph)
-- What time of the day are crimes committed in Boston? (time of day heatmap)
-- How has the crime rate in Boston changed over time? (crime trend line graph)
+- Which neighbourhoods in Boston have the highest crime rate? (This will be visualized using a choropleth map.)
+- What is the most common crime committed in Boston? (This will be visualized using a bar graph.)
+- What time of the day are crimes committed in Boston? (This will be visualized using a heatmap.)
+- How has the crime rate in Boston changed over time? (This will be visualized using a line graph.)
 
 #### Scenario 1: Romeo is deciding where to move to in Boston.	
 
