@@ -1,6 +1,6 @@
 # Boston Crime App
 
-__Creators__: Mike Lee, Alexander Hinton, Andrea Lea, Dora Qian
+*__Creators__: Mike Lee, Alexander Hinton, Andrea Lea, Dora Qian*
  
 Boston Crime App is an interactive data visualization application that displays the crimes in Boston between 2015 and 2018 based on the data from the Boston Police Department.
 
@@ -10,6 +10,6 @@ All four graphs can be adjusted based on user input. From the dropdown lists, us
 
 ## Preview
 
-![sketch]("./img/sketch.jpg")
+![sketch](./img/sketch.jpg)
 
 
