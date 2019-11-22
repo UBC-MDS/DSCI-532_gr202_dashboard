@@ -2,7 +2,7 @@
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-*__Creators__: Mike Lee, Alexander Hinton, Andrea Lea, Yingping Qian*
+*__Creators__: Mike Chen, Alexander Hinton, Andrea Lee, Yingping Qian*
  
 Boston Crime App is an interactive data visualization application that displays the crimes in Boston between 2015 and 2018 based on the data from the Boston Police Department.
 
