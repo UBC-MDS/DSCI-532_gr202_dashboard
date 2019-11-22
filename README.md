@@ -1,5 +1,7 @@
 # Boston Crime App
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 *__Creators__: Mike Lee, Alexander Hinton, Andrea Lea, Yingping Qian*
  
 Boston Crime App is an interactive data visualization application that displays the crimes in Boston between 2015 and 2018 based on the data from the Boston Police Department.
@@ -21,7 +23,6 @@ If you have a feature request or find a bug, please create an issue in our repo.
 If you would like to make any contribution to our app, you can fork this repo and send us a pull request(PR). For details on creating a PR see GitHub documentation [here](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/creating-a-pull-request). Your pull request will be reviewed by our team within 5 days.
 
 Please note all contributors must abide by our [CODE OF CONDUCT](./CODE_OF_CONDUCT.md).
-
 
 
 
