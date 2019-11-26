@@ -24,7 +24,7 @@ gdf = get_gpd_df()
 # Import boston crimes
 df = pd.read_csv("data/crime.csv", encoding = 'latin-1', )
 # filter for needed columns
-df = df[["DISTRICT", "YEAR", "MONTH", "OFFENSE_CODE_GROUP"]]
+df = df[["DISTRICT", "YEAR", "MONTH", "DAY_OF_WEEK", "HOUR", "OFFENSE_CODE_GROUP"]]
 # map district to neighbourhoods
 df['DISTRICT'] = df['DISTRICT'].replace(
                                 {'A1': 'Downtown',
@@ -42,15 +42,18 @@ df['DISTRICT'] = df['DISTRICT'].replace(
 
 
 ## FUNCTIONS
-def chart_filter(df, year = 'All', month = 'All', crime = 'All'):
-
-# Wrangle data
+def chart_filter(df, year = None, month = None, neighbourhood = None, crime = None):
     filtered_df = df
-    if year != 'All':
+    if year != None:
         filtered_df = filtered_df.query('YEAR == %s' % year)
-    if month != 'All':
+    if month != None:
         filtered_df = filtered_df.query('MONTH == %s' % month)
-    if crime != 'All':
+    if neighbourhood != None:
+        if type(neighbourhood) == list:
+            filtered_df = filtered_df.query('DISTRICT == %s' % neighbourhood)
+        else:
+            filtered_df = filtered_df.query('DISTRICT == "%s"' % neighbourhood)
+    if crime != None:
         if type(crime) == list:
             filtered_df = filtered_df.query('OFFENSE_CODE_GROUP == %s' % crime)
         else:
@@ -70,7 +73,7 @@ def create_geo_data(gdf):
     choro_data = alt.Data(values = choro_json['features'])
     return choro_data
 
-# Mapping function based on all of the above
+# mapping function based on all of the above
 def gen_map(geodata, color_column, title, tooltip, color_scheme='bluegreen'):
     '''
         Generates Boston neighbourhoods map with building count choropleth
@@ -97,18 +100,34 @@ def gen_map(geodata, color_column, title, tooltip, color_scheme='bluegreen'):
     )
     return base + choro
 
+# create plot functions
+def boston_map(df):
+    boston_map = gen_map(geodata = df, 
+                        color_column='properties.YEAR', 
+                        color_scheme='yelloworangered',
+                        title = "Crime Counts in Boston Neighrbourhoods",
+                        tooltip = [alt.Tooltip('properties.Name:O', title = 'Neighbourhood'),
+                                    alt.Tooltip('properties.YEAR:Q', title = 'Crime Count')])
+    return boston_map
+
+def heatmap(df): #NEED TO FIX THIS TO MAKE IT WORK
+    heatmap = alt.Chart(df).mark_rect().encode(
+        x = alt.X("HOUR:O", title = "Hour of Day", 
+                  axis = alt.Axis(labelAngle = 0)),
+        y = alt.Y('DAY_OF_WEEK:O', 
+                  sort = ["Monday", "Tuesday", "Wednesday", 
+                        "Thursday", "Friday", "Saturday", "Sunday"],
+                  title = "Day of Week"),
+        color = alt.Color('count()', legend = alt.Legend(title = ""))
+    ).properties(title = "Occurence of Crime by Hour and Day in Boston")
+    return heatmap
+
 ## wrap all the other functions
-def make_plot(df, gdf, month = 'All', year = 'All', crime = 'All'):
-    df = chart_filter(df, month = month, year = year, crime = crime)
+def make_plot(df, gdf, year = None, month = None, neighbourhood = None, crime = None):
+    df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood, crime = crime)
     gdf = create_merged_gdf(df, gdf)
     choro_data = create_geo_data(gdf)
-    boston_map = gen_map(geodata = choro_data, 
-                      color_column='properties.YEAR', 
-                      color_scheme='yelloworangered',
-                      title = "Crime Counts in Boston Neighrbourhoods",
-                      tooltip = [alt.Tooltip('properties.Name:O', title = 'Neighbourhood'),
-                                 alt.Tooltip('properties.YEAR:Q', title = 'Crime Count')])
-    return boston_map
+    return  boston_map(choro_data) #| heatmap(df)
 
 app = dash.Dash(__name__, assets_folder='assets')
 server = app.server
@@ -120,7 +139,6 @@ colors = {"white": "#ffffff",
           "light_grey": "#d2d7df",
           "ubc_blue": "#082145"
           }
-
 
 app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children = [
 
@@ -144,26 +162,139 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
         ),
     
     dcc.Dropdown(
+        id = 'year-dropdown',
+            options=[
+                {'label': 2015, 'value': 2015},
+                {'label': 2016, 'value': 2016},
+                {'label': 2017, 'value': 2017},
+                {'label': 2018, 'value': 2018}
+            ],
+            value=None, style=dict(width='50%')
+            ),
+
+    dcc.Dropdown(
+        id = 'month-dropdown',
+            options=[
+                {'label': 'January', 'value': 1},
+                {'label': 'February', 'value': 2},
+                {'label': 'March', 'value': 3},
+                {'label': 'April', 'value': 4},
+                {'label': 'May', 'value': 5},
+                {'label': 'June', 'value': 6},
+                {'label': 'July', 'value': 7},
+                {'label': 'August', 'value': 8},
+                {'label': 'September', 'value': 9},
+                {'label': 'October', 'value': 10},
+                {'label': 'November', 'value': 11},
+                {'label': 'December', 'value': 12},
+            ],
+            value=None, style=dict(width='50%')
+            ),
+
+    dcc.Dropdown(
+        id = 'neighbourhood-dropdown',
+            options=[
+                {'label': 'Brighton', 'value': 'Brighton'},
+                {'label': 'Charleston', 'value': 'Charleston'},
+                {'label': 'Dorchester', 'value': 'Dorchester'},
+                {'label': 'Downtown', 'value': 'Downtown'},
+                {'label': 'East Boston', 'value': 'East Boston'},
+                {'label': 'Hyde Park', 'value': 'Hyde Park'},
+                {'label': 'Jamaica Plain', 'value': 'Jamaica Plain'},
+                {'label': 'Mattapan', 'value': 'Mattapan'},
+                {'label': 'Roxbury', 'value': 'Roxbury'},                
+                {'label': 'South Boston', 'value': 'South Boston'},                
+                {'label': 'South End', 'value': 'South End'},                
+                {'label': 'West Roxbury', 'value': 'West Roxbury'}                
+            ],
+            value=None, style=dict(width='50%')
+            ),
+
+    dcc.Dropdown(
         id = 'crime-dropdown',
             options=[
-                {'label': 'Larceny', 'value': 'Larceny'},
-                {'label': 'Motor Vehicle', 'value': 'Motor Vehicle Accident Response'},
-                {'label': 'Vandalism', 'value': 'Vandalism'}
-    ],
-    value='All', style=dict(width='50%')
-    ),
+                {'label': 'Aggravated Assault', 'value': 'Aggravated Assault'} ,
+                {'label': 'Aircraft', 'value': 'Aircraft'} ,
+                {'label': 'Arson', 'value': 'Arson'} ,
+                {'label': 'Assembly Or Gathering Violations', 'value': 'Assembly or Gathering Violations'} ,
+                {'label': 'Auto Theft', 'value': 'Auto Theft'} ,
+                {'label': 'Auto Theft Recovery', 'value': 'Auto Theft Recovery'} ,
+                {'label': 'Ballistics', 'value': 'Ballistics'} ,
+                {'label': 'Biological Threat', 'value': 'Biological Threat'} ,
+                {'label': 'Bomb Hoax', 'value': 'Bomb Hoax'} ,
+                {'label': 'Burglary - No Property Taken', 'value': 'Burglary - No Property Taken'} ,
+                {'label': 'Commercial Burglary', 'value': 'Commercial Burglary'} ,
+                {'label': 'Confidence Games', 'value': 'Confidence Games'} ,
+                {'label': 'Counterfeiting', 'value': 'Counterfeiting'} ,
+                {'label': 'Criminal Harassment', 'value': 'Criminal Harassment'} ,
+                {'label': 'Disorderly Conduct', 'value': 'Disorderly Conduct'} ,
+                {'label': 'Drug Violation', 'value': 'Drug Violation'} ,
+                {'label': 'Embezzlement', 'value': 'Embezzlement'} ,
+                {'label': 'Evading Fare', 'value': 'Evading Fare'} ,
+                {'label': 'Explosives', 'value': 'Explosives'} ,
+                {'label': 'Fire Related Reports', 'value': 'Fire Related Reports'} ,
+                {'label': 'Firearm Discovery', 'value': 'Firearm Discovery'} ,
+                {'label': 'Firearm Violations', 'value': 'Firearm Violations'} ,
+                {'label': 'Fraud', 'value': 'Fraud'} ,
+                {'label': 'Gambling', 'value': 'Gambling'} ,
+                {'label': 'Home Invasion', 'value': 'HOME INVASION'} ,
+                {'label': 'Human Trafficking', 'value': 'HUMAN TRAFFICKING'} ,
+                {'label': 'Human Trafficking - Involuntary Servitude', 'value': 'HUMAN TRAFFICKING - INVOLUNTARY SERVITUDE'} ,
+                {'label': 'Harassment', 'value': 'Harassment'} ,
+                {'label': 'Harbor Related Incidents', 'value': 'Harbor Related Incidents'} ,
+                {'label': 'Homicide', 'value': 'Homicide'} ,
+                {'label': 'Investigate Person', 'value': 'INVESTIGATE PERSON'} ,
+                {'label': 'Investigate Person', 'value': 'Investigate Person'} ,
+                {'label': 'Investigate Property', 'value': 'Investigate Property'} ,
+                {'label': 'Landlord/Tenant Disputes', 'value': 'Landlord/Tenant Disputes'} ,
+                {'label': 'Larceny', 'value': 'Larceny'} ,
+                {'label': 'Larceny From Motor Vehicle', 'value': 'Larceny From Motor Vehicle'} ,
+                {'label': 'License Plate Related Incidents', 'value': 'License Plate Related Incidents'} ,
+                {'label': 'License Violation', 'value': 'License Violation'} ,
+                {'label': 'Liquor Violation', 'value': 'Liquor Violation'} ,
+                {'label': 'Manslaughter', 'value': 'Manslaughter'} ,
+                {'label': 'Medical Assistance', 'value': 'Medical Assistance'} ,
+                {'label': 'Missing Person Located', 'value': 'Missing Person Located'} ,
+                {'label': 'Missing Person Reported', 'value': 'Missing Person Reported'} ,
+                {'label': 'Motor Vehicle Accident Response', 'value': 'Motor Vehicle Accident Response'} ,
+                {'label': 'Offenses Against Child / Family', 'value': 'Offenses Against Child / Family'} ,
+                {'label': 'Operating Under The Influence', 'value': 'Operating Under the Influence'} ,
+                {'label': 'Other', 'value': 'Other'} ,
+                {'label': 'Other Burglary', 'value': 'Other Burglary'} ,
+                {'label': 'Phone Call Complaints', 'value': 'Phone Call Complaints'} ,
+                {'label': 'Police Service Incidents', 'value': 'Police Service Incidents'} ,
+                {'label': 'Prisoner Related Incidents', 'value': 'Prisoner Related Incidents'} ,
+                {'label': 'Property Found', 'value': 'Property Found'} ,
+                {'label': 'Property Lost', 'value': 'Property Lost'} ,
+                {'label': 'Property Related Damage', 'value': 'Property Related Damage'} ,
+                {'label': 'Prostitution', 'value': 'Prostitution'} ,
+                {'label': 'Recovered Stolen Property', 'value': 'Recovered Stolen Property'} ,
+                {'label': 'Residential Burglary', 'value': 'Residential Burglary'} ,
+                {'label': 'Restraining Order Violations', 'value': 'Restraining Order Violations'} ,
+                {'label': 'Robbery', 'value': 'Robbery'} ,
+                {'label': 'Search Warrants', 'value': 'Search Warrants'} ,
+                {'label': 'Service', 'value': 'Service'} ,
+                {'label': 'Simple Assault', 'value': 'Simple Assault'} ,
+                {'label': 'Towed', 'value': 'Towed'} ,
+                {'label': 'Vandalism', 'value': 'Vandalism'} ,
+                {'label': 'Verbal Disputes', 'value': 'Verbal Disputes'} ,
+                {'label': 'Violations', 'value': 'Violations'} ,
+                {'label': 'Warrant Arrests', 'value': 'Warrant Arrests'}
+            ],
+            value=None, style=dict(width='50%')
+            ),
 
     ])
 
-
-
 @app.callback(
         dash.dependencies.Output('plot', 'srcDoc'),
-       [dash.dependencies.Input('crime-dropdown', 'value')])
+       [dash.dependencies.Input('year-dropdown', 'value'),
+       dash.dependencies.Input('month-dropdown', 'value'),
+       dash.dependencies.Input('neighbourhood-dropdown', 'value'),
+       dash.dependencies.Input('crime-dropdown', 'value')])
 
-def update_plot(value):
-    return make_plot(df, gdf, crime = value).to_html()
-
+def update_plot(year_value, month_value, neighbourhood_value, crime_value):
+    return make_plot(df, gdf, year = year_value, month = month_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
 
 if __name__ == '__main__':
     app.run_server(debug=True)
