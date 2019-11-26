@@ -1,0 +1,9 @@
+dash==1.6.1
+numpy==1.17.2
+pandas==0.25.3
+altair==3.2.0
+gunicorn==20.0.0
+geopandas==0.4.1
+json-c==0.13.1              
+json5==0.8.5                      
+jsonschema==2.6.0
