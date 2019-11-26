@@ -122,8 +122,14 @@ colors = {"white": "#ffffff",
           }
 
 
-app.layout = html.Div([
-    html.H1('This is a dashboard'),
+app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children = [
+
+    # HEADER
+    html.Div(className = 'row', style = {'backgroundColor': colors["ubc_blue"]}, children = [
+        html.H2('Boston Crime Dashboard App', style={'color' : colors["white"]})
+    ]),
+    
+    # BODY
     html.Iframe(
         sandbox='allow-scripts',
         id='plot',
@@ -146,8 +152,9 @@ app.layout = html.Div([
     ],
     value='All', style=dict(width='50%')
     ),
-    html.Div(id='dd-output'),
-])
+
+    ])
+
 
 
 @app.callback(
