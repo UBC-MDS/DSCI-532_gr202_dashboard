@@ -102,17 +102,18 @@ def gen_map(geodata, color_column, title, tooltip, color_scheme='bluegreen'):
     return base + choro
 
 # create bar graph function
-def crime_bar_chart(year, month, district = None, amount = 5):
-    df_year = df.query('YEAR == @year')
-    if (district != None):
-        df_year = df_year.query('DISTRICT == @district')
-    df_year = df_year.query('MONTH == @month')
-    df_year_smaller = df_year[["OFFENSE_CODE_GROUP", "DISTRICT", "SHOOTING", "YEAR",
-                      "MONTH", "DAY_OF_WEEK", "HOUR", "STREET", "Lat", "Long", "Location"]]
-    df_year_grouped = df_year_smaller.groupby('OFFENSE_CODE_GROUP').size().sort_values(ascending = False)[:amount]
-    df_year_smaller = df_year_smaller[df_year_smaller['OFFENSE_CODE_GROUP'].isin(df_year_grouped.index)]
-
-    crime_type_chart = alt.Chart(df_year_smaller).mark_bar().encode(
+def crime_bar_chart(df):
+#    df_year = df.query('YEAR == @year')
+#    if (district != None):
+#        df_year = df_year.query('DISTRICT == @district')
+#    df_year = df_year.query('MONTH == @month')
+#    df_year_smaller = df_year[["OFFENSE_CODE_GROUP", "DISTRICT", "SHOOTING", "YEAR",
+#                      "MONTH", "DAY_OF_WEEK", "HOUR", "STREET", "Lat", "Long", "Location"]]
+    
+    df_year_grouped = df.groupby('OFFENSE_CODE_GROUP').size().sort_values(ascending = False)[:10]
+    df = df_year_smaller[df['OFFENSE_CODE_GROUP'].isin(df_year_grouped.index)]
+    
+    crime_type_chart = alt.Chart(df).mark_bar().encode(
         y = alt.X('OFFENSE_CODE_GROUP:O', title = "Type of Offense", sort=alt.EncodingSortField(op="count", order='descending')),
         x = alt.Y('count():Q', title = "Number of Crimes")
     ).properties(
@@ -177,6 +178,13 @@ def make_heatmap_plot(df, year = None, month = None, neighbourhood = None, crime
     df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood, crime = crime)
     return  heatmap(df)
 
+def make_bar_plot(df, year = None, month = None, neighbourhood = None, crime = None):
+    df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood, crime = crime)
+    return  crime_bar_chart(df)
+
+
+
+
 app = dash.Dash(__name__, assets_folder='assets')
 server = app.server
 
@@ -220,6 +228,19 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
     html.Iframe(
         sandbox='allow-scripts',
         id='heatmap-plot',
+        height='500',
+        width='500',
+        style={'border-width': '0px'},
+
+        ################ The magic happens here
+        ## This is where the Srcdoc command is being
+        # dynamically entered
+        ################ The magic happens here
+        ),
+    
+    html.Iframe(
+        sandbox='allow-scripts',
+        id='bar-plot',
         height='500',
         width='500',
         style={'border-width': '0px'},
@@ -385,6 +406,15 @@ def update_trend_plot(year_value, month_value, neighbourhood_value, crime_value)
 def update_heatmap_plot(year_value, month_value, neighbourhood_value, crime_value):
     return make_heatmap_plot(df, year = year_value, month = month_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
     
+
+@app.callback(
+        dash.dependencies.Output('bar-plot', 'srcDoc'),
+       [dash.dependencies.Input('year-dropdown', 'value'),
+       dash.dependencies.Input('month-dropdown', 'value'),
+       dash.dependencies.Input('neighbourhood-dropdown', 'value')])
+
+def update_bar_plot(year_value, month_value, neighbourhood_value, crime_value):
+    return make_bar_plot(df, year = year_value, month = month_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
 
 if __name__ == '__main__':
     app.run_server(debug=True)
