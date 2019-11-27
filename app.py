@@ -123,11 +123,11 @@ def heatmap(df): #NEED TO FIX THIS TO MAKE IT WORK
     return heatmap
 
 ## wrap all the other functions
-def make_plot(df, gdf, year = None, month = None, neighbourhood = None, crime = None):
+def make_choro_plot(df, gdf, year = None, month = None, neighbourhood = None, crime = None):
     df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood, crime = crime)
     gdf = create_merged_gdf(df, gdf)
     choro_data = create_geo_data(gdf)
-    return  boston_map(choro_data) #| heatmap(df)
+    return  boston_map(choro_data)
 
 app = dash.Dash(__name__, assets_folder='assets')
 server = app.server
@@ -150,7 +150,7 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
     # BODY
     html.Iframe(
         sandbox='allow-scripts',
-        id='plot',
+        id='choro-plot',
         height='500',
         width='500',
         style={'border-width': '0px'},
@@ -287,14 +287,17 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
     ])
 
 @app.callback(
-        dash.dependencies.Output('plot', 'srcDoc'),
+        dash.dependencies.Output('choro-plot', 'srcDoc'),
        [dash.dependencies.Input('year-dropdown', 'value'),
        dash.dependencies.Input('month-dropdown', 'value'),
        dash.dependencies.Input('neighbourhood-dropdown', 'value'),
        dash.dependencies.Input('crime-dropdown', 'value')])
 
 def update_plot(year_value, month_value, neighbourhood_value, crime_value):
-    return make_plot(df, gdf, year = year_value, month = month_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
+    return make_choro_plot(df, gdf, year = year_value, month = month_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
+
+
+    
 
 if __name__ == '__main__':
     app.run_server(debug=True)
