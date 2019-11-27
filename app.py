@@ -88,7 +88,7 @@ def create_geo_data(gdf):
     return choro_data
 
 # mapping function based on all of the above
-def gen_map(geodata, color_column, title, tooltip, color_scheme='bluegreen'):
+def gen_map(geodata, color_column, title, tooltip):
     '''
         Generates Boston neighbourhoods map with building count choropleth
     '''
@@ -108,7 +108,7 @@ def gen_map(geodata, color_column, title, tooltip, color_scheme='bluegreen'):
     ).encode(
         alt.Color(color_column, 
                   type='quantitative', 
-                  scale=alt.Scale(scheme=color_scheme),
+                  scale=alt.Scale(),
                   title = "Crime counts"),
          tooltip=tooltip
     )
