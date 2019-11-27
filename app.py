@@ -141,7 +141,7 @@ def boston_map(df):
     boston_map = gen_map(geodata = df, 
                         color_column='properties.YEAR', 
                        # color_scheme='yelloworangered',
-                        title = "Crime Counts in Boston Neighrbourhoods",
+                        title = "Crime Counts in Boston Neighbourhoods",
                         tooltip = [alt.Tooltip('properties.Name:O', title = 'Neighbourhood'),
                                     alt.Tooltip('properties.YEAR:Q', title = 'Crime Count')]
     ).configure_legend(labelFontSize=14, titleFontSize=16)
