@@ -122,12 +122,31 @@ def heatmap(df): #NEED TO FIX THIS TO MAKE IT WORK
     ).properties(title = "Occurence of Crime by Hour and Day in Boston")
     return heatmap
 
+def trendgraph(df):
+    dfg = df.groupby(['YEAR', 'MONTH']).count().reset_index()
+    trendgraph = alt.Chart(dfg
+    ).transform_calculate(
+        date = 'datetime(datum.YEAR, datum.MONTH, 1)' 
+    ).mark_line().encode(
+        x = alt.X("date:T", 
+                  title = "Time",
+                 axis = alt.Axis(labelAngle = 0)),
+        y = alt.Y('OFFENSE_CODE_GROUP:Q', title = "Occurence of Crime")
+    ).properties(title = "Trend of Crime Over time",
+                width = 600,
+                height = 300)
+    return trendgraph
+
 ## wrap all the other functions
 def make_choro_plot(df, gdf, year = None, month = None, neighbourhood = None, crime = None):
     df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood, crime = crime)
     gdf = create_merged_gdf(df, gdf)
     choro_data = create_geo_data(gdf)
     return  boston_map(choro_data)
+
+def trend_plot(df, year = None, neighbourhood = None, crime = None):
+    df = chart_filter(df, year = year, neighbourhood = neighbourhood, crime = crime)
+    return  trendgraph(df)
 
 app = dash.Dash(__name__, assets_folder='assets')
 server = app.server
@@ -160,6 +179,14 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
         # dynamically entered
         ################ The magic happens here
         ),
+
+    html.Iframe(
+        sandbox='allow-scripts',
+        id='trend_plot',
+        height='500',
+        width='500',
+        style={'border-width': '0px'},
+         ),
     
     dcc.Dropdown(
         id = 'year-dropdown',
@@ -293,8 +320,18 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
        dash.dependencies.Input('neighbourhood-dropdown', 'value'),
        dash.dependencies.Input('crime-dropdown', 'value')])
 
-def update_plot(year_value, month_value, neighbourhood_value, crime_value):
+def update_choro_plot(year_value, month_value, neighbourhood_value, crime_value):
     return make_choro_plot(df, gdf, year = year_value, month = month_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
+    
+@app.callback(
+        dash.dependencies.Output('trend_plot', 'srcDoc'),
+       [dash.dependencies.Input('year-dropdown', 'value'),
+       dash.dependencies.Input('month-dropdown', 'value'),
+       dash.dependencies.Input('neighbourhood-dropdown', 'value'),
+       dash.dependencies.Input('crime-dropdown', 'value')])
+
+def update_trend_plot(year_value, month_value, neighbourhood_value, crime_value):
+    return trend_plot(df, year = year_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
 
 
     
