@@ -111,7 +111,7 @@ def crime_bar_chart(df):
 #                      "MONTH", "DAY_OF_WEEK", "HOUR", "STREET", "Lat", "Long", "Location"]]
     
     df_year_grouped = df.groupby('OFFENSE_CODE_GROUP').size().sort_values(ascending = False)[:10]
-    df = df_year_smaller[df['OFFENSE_CODE_GROUP'].isin(df_year_grouped.index)]
+    df = df[df['OFFENSE_CODE_GROUP'].isin(df_year_grouped.index)]
     
     crime_type_chart = alt.Chart(df).mark_bar().encode(
         y = alt.X('OFFENSE_CODE_GROUP:O', title = "Type of Offense", sort=alt.EncodingSortField(op="count", order='descending')),
@@ -178,8 +178,8 @@ def make_heatmap_plot(df, year = None, month = None, neighbourhood = None, crime
     df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood, crime = crime)
     return  heatmap(df)
 
-def make_bar_plot(df, year = None, month = None, neighbourhood = None, crime = None):
-    df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood, crime = crime)
+def make_bar_plot(df, year = None, month = None, neighbourhood = None):
+    df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood)
     return  crime_bar_chart(df)
 
 
@@ -413,8 +413,8 @@ def update_heatmap_plot(year_value, month_value, neighbourhood_value, crime_valu
        dash.dependencies.Input('month-dropdown', 'value'),
        dash.dependencies.Input('neighbourhood-dropdown', 'value')])
 
-def update_bar_plot(year_value, month_value, neighbourhood_value, crime_value):
-    return make_bar_plot(df, year = year_value, month = month_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
+def update_bar_plot(year_value, month_value, neighbourhood_value):
+    return make_bar_plot(df, year = year_value, month = month_value, neighbourhood = neighbourhood_value).to_html()
 
 if __name__ == '__main__':
     app.run_server(debug=True)
