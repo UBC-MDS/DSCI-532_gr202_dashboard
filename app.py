@@ -8,7 +8,7 @@ import geopandas as gpd
 import json
 # alt.data_transformers.disable_max_rows()
 # alt.data_transformers.enable('json')
-alt.data_transformers.enable('data_server_proxied')
+alt.data_transformers.enable('data_server')
 
 # LOAD IN DATASETS
 geo_json_file_loc= 'data/Boston_Neighborhoods.geojson'
@@ -141,9 +141,10 @@ def boston_map(df):
     boston_map = gen_map(geodata = df, 
                         color_column='properties.YEAR', 
                        # color_scheme='yelloworangered',
-                        title = "Crime Counts in Boston Neighrbourhoods",
+                        title = "Crime Counts in Boston Neighbourhoods",
                         tooltip = [alt.Tooltip('properties.Name:O', title = 'Neighbourhood'),
-                                    alt.Tooltip('properties.YEAR:Q', title = 'Crime Count')])
+                                    alt.Tooltip('properties.YEAR:Q', title = 'Crime Count')]
+    ).configure_legend(labelFontSize=14, titleFontSize=16)
     return boston_map
 
 
@@ -173,7 +174,8 @@ def heatmap(df):
                         "Thursday", "Friday", "Saturday", "Sunday"],
                   title = "Day of Week"),
         color = alt.Color('count()', legend = alt.Legend(title = ""))
-    ).properties(title = "Occurence of Crime by Hour and Day in Boston")
+    ).properties(title = "Occurence of Crime by Hour and Day in Boston"
+    ).configure_legend(labelFontSize=14, titleFontSize=16)
     return heatmap
 
 # set theme
@@ -251,8 +253,8 @@ def make_heatmap_plot(df, year = None, month = None, neighbourhood = None, crime
     df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood, crime = crime)
     return  heatmap(df)
 
-def make_bar_plot(df, year = None, month = None, neighbourhood = None):
-    df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood)
+def make_bar_plot(df, year = None, month = None, neighbourhood = None, crime=None):
+    df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood, crime=crime)
     return  crime_bar_chart(df)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -491,10 +493,11 @@ def update_heatmap_plot(year_value, month_value, neighbourhood_value, crime_valu
         dash.dependencies.Output('bar-plot', 'srcDoc'),
        [dash.dependencies.Input('year-slider', 'value'),
        dash.dependencies.Input('month-slider', 'value'),
-       dash.dependencies.Input('neighbourhood-dropdown', 'value')])
+       dash.dependencies.Input('neighbourhood-dropdown', 'value'),
+       dash.dependencies.Input('crime-dropdown', 'value')])
 
-def update_bar_plot(year_value, month_value, neighbourhood_value):
-    return make_bar_plot(df, year = year_value, month = month_value, neighbourhood = neighbourhood_value).to_html()
+def update_bar_plot(year_value, month_value, neighbourhood_value, crime_value):
+    return make_bar_plot(df, year = year_value, month = month_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
 
 if __name__ == '__main__':
     app.run_server(debug=True)
