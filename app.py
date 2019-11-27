@@ -101,6 +101,25 @@ def gen_map(geodata, color_column, title, tooltip, color_scheme='bluegreen'):
     )
     return base + choro
 
+# create bar graph function
+def create_crime_bar_chart(df, year, month, district = "D4", amount = 10):
+    df_year = df.query('YEAR == @year & DISTRICT == @district')
+    df_year = df_year.query('MONTH == @month')
+    df_year_smaller = df_year[["OFFENSE_CODE_GROUP", "DISTRICT", "SHOOTING", "YEAR",
+                      "MONTH", "DAY_OF_WEEK", "HOUR", "STREET", "Lat", "Long", "Location"]]
+    df_year_grouped = df_year_smaller.groupby('OFFENSE_CODE_GROUP').size().sort_values(ascending = False)[:amount]
+    df_year_smaller = df_year_smaller[df_year_smaller['OFFENSE_CODE_GROUP'].isin(df_year_grouped.index)]
+
+    crime_type_chart = alt.Chart(df_year_smaller).mark_bar().encode(
+        y = alt.X('OFFENSE_CODE_GROUP:O', title = "Type of Offense", sort=alt.EncodingSortField(op="count", order='descending')),
+        x = alt.Y('count():Q', title = "Number of Crimes")
+    ).properties(
+        width=500,
+        height=200, 
+        title = "Total Crime Counts In Boston by Type"
+    )
+    return crime_type_chart
+
 # create plot functions
 def boston_map(df):
     boston_map = gen_map(geodata = df, 
@@ -110,6 +129,7 @@ def boston_map(df):
                         tooltip = [alt.Tooltip('properties.Name:O', title = 'Neighbourhood'),
                                     alt.Tooltip('properties.YEAR:Q', title = 'Crime Count')])
     return boston_map
+
 
 def trendgraph(df):
     dfg = df.groupby(['YEAR', 'MONTH']).count().reset_index()
