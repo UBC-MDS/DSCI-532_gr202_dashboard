@@ -111,18 +111,6 @@ def boston_map(df):
                                     alt.Tooltip('properties.YEAR:Q', title = 'Crime Count')])
     return boston_map
 
-def heatmap(df): #NEED TO FIX THIS TO MAKE IT WORK
-    heatmap = alt.Chart(df).mark_rect().encode(
-        x = alt.X("HOUR:O", title = "Hour of Day", 
-                  axis = alt.Axis(labelAngle = 0)),
-        y = alt.Y('DAY_OF_WEEK:O', 
-                  sort = ["Monday", "Tuesday", "Wednesday", 
-                        "Thursday", "Friday", "Saturday", "Sunday"],
-                  title = "Day of Week"),
-        color = alt.Color('count()', legend = alt.Legend(title = ""))
-    ).properties(title = "Occurence of Crime by Hour and Day in Boston")
-    return heatmap
-
 def trendgraph(df):
     dfg = df.groupby(['YEAR', 'MONTH']).count().reset_index()
     trendgraph = alt.Chart(dfg
@@ -140,7 +128,7 @@ def trendgraph(df):
                 height = 300)
     return trendgraph + trendgraph.mark_point()
 
-def heatmap(df): #NEED TO FIX THIS TO MAKE IT WORK
+def heatmap(df):
     heatmap = alt.Chart(df).mark_rect().encode(
         x = alt.X("HOUR:O", title = "Hour of Day", 
                   axis = alt.Axis(labelAngle = 0)),
@@ -201,7 +189,7 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
 
     html.Iframe(
         sandbox='allow-scripts',
-        id='trend_plot',
+        id='trend-plot',
         height='500',
         width='500',
         style={'border-width': '0px'},
@@ -356,7 +344,7 @@ def update_choro_plot(year_value, month_value, neighbourhood_value, crime_value)
     return make_choro_plot(df, gdf, year = year_value, month = month_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
     
 @app.callback(
-        dash.dependencies.Output('trend_plot', 'srcDoc'),
+        dash.dependencies.Output('trend-plot', 'srcDoc'),
        [dash.dependencies.Input('year-dropdown', 'value'),
        dash.dependencies.Input('month-dropdown', 'value'),
        dash.dependencies.Input('neighbourhood-dropdown', 'value'),
