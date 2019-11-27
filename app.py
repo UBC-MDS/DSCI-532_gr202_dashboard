@@ -6,6 +6,7 @@ import altair as alt
 import pandas as pd
 import geopandas as gpd
 import json
+alt.data_transformers.disable_max_rows()
 
 # LOAD IN DATASETS
 geo_json_file_loc= 'data/Boston_Neighborhoods.geojson'
@@ -131,11 +132,25 @@ def trendgraph(df):
         x = alt.X("date:T", 
                   title = "Time",
                  axis = alt.Axis(labelAngle = 0)),
-        y = alt.Y('OFFENSE_CODE_GROUP:Q', title = "Occurence of Crime")
+        y = alt.Y('OFFENSE_CODE_GROUP:Q', title = "Occurence of Crime"),
+        tooltip = [alt.Tooltip('date:T', title = 'Date'),
+                    alt.Tooltip('OFFENSE_CODE_GROUP:Q', title = 'Crime Count')]
     ).properties(title = "Trend of Crime Over time",
                 width = 600,
                 height = 300)
-    return trendgraph
+    return trendgraph + trendgraph.mark_point()
+
+def heatmap(df): #NEED TO FIX THIS TO MAKE IT WORK
+    heatmap = alt.Chart(df).mark_rect().encode(
+        x = alt.X("HOUR:O", title = "Hour of Day", 
+                  axis = alt.Axis(labelAngle = 0)),
+        y = alt.Y('DAY_OF_WEEK:O', 
+                  sort = ["Monday", "Tuesday", "Wednesday", 
+                        "Thursday", "Friday", "Saturday", "Sunday"],
+                  title = "Day of Week"),
+        color = alt.Color('count()', legend = alt.Legend(title = ""))
+    ).properties(title = "Occurence of Crime by Hour and Day in Boston")
+    return heatmap
 
 ## wrap all the other functions
 def make_choro_plot(df, gdf, year = None, month = None, neighbourhood = None, crime = None):
@@ -147,6 +162,10 @@ def make_choro_plot(df, gdf, year = None, month = None, neighbourhood = None, cr
 def trend_plot(df, year = None, neighbourhood = None, crime = None):
     df = chart_filter(df, year = year, neighbourhood = neighbourhood, crime = crime)
     return  trendgraph(df)
+
+def make_heatmap_plot(df, year = None, month = None, neighbourhood = None, crime = None):
+    df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood, crime = crime)
+    return  heatmap(df)
 
 app = dash.Dash(__name__, assets_folder='assets')
 server = app.server
@@ -187,6 +206,19 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
         width='500',
         style={'border-width': '0px'},
          ),
+
+    html.Iframe(
+        sandbox='allow-scripts',
+        id='heatmap-plot',
+        height='500',
+        width='500',
+        style={'border-width': '0px'},
+
+        ################ The magic happens here
+        ## This is where the Srcdoc command is being
+        # dynamically entered
+        ################ The magic happens here
+        ),
     
     dcc.Dropdown(
         id = 'year-dropdown',
@@ -333,7 +365,15 @@ def update_choro_plot(year_value, month_value, neighbourhood_value, crime_value)
 def update_trend_plot(year_value, month_value, neighbourhood_value, crime_value):
     return trend_plot(df, year = year_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
 
+@app.callback(
+        dash.dependencies.Output('heatmap-plot', 'srcDoc'),
+       [dash.dependencies.Input('year-dropdown', 'value'),
+       dash.dependencies.Input('month-dropdown', 'value'),
+       dash.dependencies.Input('neighbourhood-dropdown', 'value'),
+       dash.dependencies.Input('crime-dropdown', 'value')])
 
+def update_heatmap_plot(year_value, month_value, neighbourhood_value, crime_value):
+    return make_heatmap_plot(df, year = year_value, month = month_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
     
 
 if __name__ == '__main__':
