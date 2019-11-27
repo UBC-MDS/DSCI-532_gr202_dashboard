@@ -140,7 +140,7 @@ def crime_bar_chart(df):
 def boston_map(df):
     boston_map = gen_map(geodata = df, 
                         color_column='properties.YEAR', 
-                        color_scheme='yelloworangered',
+                       # color_scheme='yelloworangered',
                         title = "Crime Counts in Boston Neighrbourhoods",
                         tooltip = [alt.Tooltip('properties.Name:O', title = 'Neighbourhood'),
                                     alt.Tooltip('properties.YEAR:Q', title = 'Crime Count')])
@@ -325,7 +325,6 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
                 id = 'neighbourhood-dropdown',
                     options=[
                         {'label': 'Brighton', 'value': 'Brighton'},
-                        {'label': 'Charleston', 'value': 'Charleston'},
                         {'label': 'Dorchester', 'value': 'Dorchester'},
                         {'label': 'Downtown', 'value': 'Downtown'},
                         {'label': 'East Boston', 'value': 'East Boston'},
