@@ -102,8 +102,10 @@ def gen_map(geodata, color_column, title, tooltip, color_scheme='bluegreen'):
     return base + choro
 
 # create bar graph function
-def create_crime_bar_chart(df, year, month, district = "D4", amount = 10):
-    df_year = df.query('YEAR == @year & DISTRICT == @district')
+def crime_bar_chart(year, month, district = None, amount = 5):
+    df_year = df.query('YEAR == @year')
+    if (district != None):
+        df_year = df_year.query('DISTRICT == @district')
     df_year = df_year.query('MONTH == @month')
     df_year_smaller = df_year[["OFFENSE_CODE_GROUP", "DISTRICT", "SHOOTING", "YEAR",
                       "MONTH", "DAY_OF_WEEK", "HOUR", "STREET", "Lat", "Long", "Location"]]
