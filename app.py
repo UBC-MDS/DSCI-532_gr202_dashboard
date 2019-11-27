@@ -131,11 +131,13 @@ def trendgraph(df):
         x = alt.X("date:T", 
                   title = "Time",
                  axis = alt.Axis(labelAngle = 0)),
-        y = alt.Y('OFFENSE_CODE_GROUP:Q', title = "Occurence of Crime")
+        y = alt.Y('OFFENSE_CODE_GROUP:Q', title = "Occurence of Crime"),
+        tooltip = [alt.Tooltip('date:T', title = 'Date'),
+                    alt.Tooltip('OFFENSE_CODE_GROUP:Q', title = 'Crime Count')]
     ).properties(title = "Trend of Crime Over time",
                 width = 600,
                 height = 300)
-    return trendgraph
+    return trendgraph + trendgraph.mark_point()
 
 ## wrap all the other functions
 def make_choro_plot(df, gdf, year = None, month = None, neighbourhood = None, crime = None):
