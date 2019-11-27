@@ -255,7 +255,8 @@ def make_bar_plot(df, year = None, month = None, neighbourhood = None):
     df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood)
     return  crime_bar_chart(df)
 
-app = dash.Dash(__name__, assets_folder='assets')
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 
 app.title = 'Boston Crime App'
@@ -269,175 +270,193 @@ colors = {"white": "#ffffff",
 app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children = [
 
     # HEADER
-    html.Div(className = 'row', style = {'backgroundColor': colors["ubc_blue"]}, children = [
+    html.Div(className = 'row', style = {'backgroundColor': colors["ubc_blue"], "padding" : 10}, children = [
         html.H2('Boston Crime Dashboard App', style={'color' : colors["white"]})
     ]),
     
     # BODY
-    html.Iframe(
-        sandbox='allow-scripts',
-        id='choro-plot',
-        height='500',
-        width='500',
-        style={'border-width': '0px'},
-        ),
+    html.Div(className = "row", children = [
 
-    html.Iframe(
-        sandbox='allow-scripts',
-        id='trend-plot',
-        height='500',
-        width='500',
-        style={'border-width': '0px'},
-         ),
-
-    html.Iframe(
-        sandbox='allow-scripts',
-        id='heatmap-plot',
-        height='500',
-        width='500',
-        style={'border-width': '0px'},
-        ),
-    
-    html.Iframe(
-        sandbox='allow-scripts',
-        id='bar-plot',
-        height='500',
-        width='500',
-        style={'border-width': '0px'},
-        ),
-    
-    dcc.RangeSlider(
-        id = 'year-slider',
-        min=2015,
-        max=2018,
-        step=1,
-        marks={
-            2015: '2015',
-            2016: '2016',
-            2017: '2017',
-            2018: '2018'
-            },
-        value=[2015,2018]
-        ),
-
-    dcc.RangeSlider(
-        id = 'month-slider',
-        min=1,
-        max=12,
-        step=1,
-        marks={
-            1: 'January',
-            2: 'February',
-            3: 'March',
-            4: 'April',
-            5: 'May',
-            6: 'June',
-            7: 'July',
-            8: 'August',
-            9: 'September',
-            10: 'October',
-            11: 'November',
-            12: 'December'
-            },
-        value=[1,12]
-        ),
-
-    dcc.Dropdown(
-        id = 'neighbourhood-dropdown',
-            options=[
-                {'label': 'Brighton', 'value': 'Brighton'},
-                {'label': 'Charleston', 'value': 'Charleston'},
-                {'label': 'Dorchester', 'value': 'Dorchester'},
-                {'label': 'Downtown', 'value': 'Downtown'},
-                {'label': 'East Boston', 'value': 'East Boston'},
-                {'label': 'Hyde Park', 'value': 'Hyde Park'},
-                {'label': 'Jamaica Plain', 'value': 'Jamaica Plain'},
-                {'label': 'Mattapan', 'value': 'Mattapan'},
-                {'label': 'Roxbury', 'value': 'Roxbury'},                
-                {'label': 'South Boston', 'value': 'South Boston'},                
-                {'label': 'South End', 'value': 'South End'},                
-                {'label': 'West Roxbury', 'value': 'West Roxbury'}                
-            ],
-            value=None, style=dict(width='50%'),
-            multi=True          
+         #SIDE BAR
+        html.Div(className = "two columns", style = {'padding': 20}, children= [
+            html.P("Select a range of years"),
+            dcc.RangeSlider(
+                    id = 'year-slider',
+                    min=2015,
+                    max=2018,
+                    step=1,
+                    marks={
+                        2015: '2015',
+                        2016: '2016',
+                        2017: '2017',
+                        2018: '2018'
+                        },
+                    value=[2015,2018],
             ),
+            html.Br(),
+            html.P("Select a range of months"),
+            dcc.RangeSlider(
+                id = 'month-slider',
+                min=1,
+                max=12,
+                step=1,
+                marks={
+                    1: 'Jan',
+                    2: '',
+                    3: '',
+                    4: '',
+                    5: '',
+                    6: 'June',
+                    7: '',
+                    8: '',
+                    9: '',
+                    10: '',
+                    11: '',
+                    12: 'Dec'
+                    },
+                value=[1,12],
+                ),
 
-    dcc.Dropdown(
-        id = 'crime-dropdown',
-            options=[
-                {'label': 'Aggravated Assault', 'value': 'Aggravated Assault'} ,
-                {'label': 'Aircraft', 'value': 'Aircraft'} ,
-                {'label': 'Arson', 'value': 'Arson'} ,
-                {'label': 'Assembly Or Gathering Violations', 'value': 'Assembly or Gathering Violations'} ,
-                {'label': 'Auto Theft', 'value': 'Auto Theft'} ,
-                {'label': 'Auto Theft Recovery', 'value': 'Auto Theft Recovery'} ,
-                {'label': 'Ballistics', 'value': 'Ballistics'} ,
-                {'label': 'Biological Threat', 'value': 'Biological Threat'} ,
-                {'label': 'Bomb Hoax', 'value': 'Bomb Hoax'} ,
-                {'label': 'Burglary - No Property Taken', 'value': 'Burglary - No Property Taken'} ,
-                {'label': 'Commercial Burglary', 'value': 'Commercial Burglary'} ,
-                {'label': 'Confidence Games', 'value': 'Confidence Games'} ,
-                {'label': 'Counterfeiting', 'value': 'Counterfeiting'} ,
-                {'label': 'Criminal Harassment', 'value': 'Criminal Harassment'} ,
-                {'label': 'Disorderly Conduct', 'value': 'Disorderly Conduct'} ,
-                {'label': 'Drug Violation', 'value': 'Drug Violation'} ,
-                {'label': 'Embezzlement', 'value': 'Embezzlement'} ,
-                {'label': 'Evading Fare', 'value': 'Evading Fare'} ,
-                {'label': 'Explosives', 'value': 'Explosives'} ,
-                {'label': 'Fire Related Reports', 'value': 'Fire Related Reports'} ,
-                {'label': 'Firearm Discovery', 'value': 'Firearm Discovery'} ,
-                {'label': 'Firearm Violations', 'value': 'Firearm Violations'} ,
-                {'label': 'Fraud', 'value': 'Fraud'} ,
-                {'label': 'Gambling', 'value': 'Gambling'} ,
-                {'label': 'Home Invasion', 'value': 'HOME INVASION'} ,
-                {'label': 'Human Trafficking', 'value': 'HUMAN TRAFFICKING'} ,
-                {'label': 'Human Trafficking - Involuntary Servitude', 'value': 'HUMAN TRAFFICKING - INVOLUNTARY SERVITUDE'} ,
-                {'label': 'Harassment', 'value': 'Harassment'} ,
-                {'label': 'Harbor Related Incidents', 'value': 'Harbor Related Incidents'} ,
-                {'label': 'Homicide', 'value': 'Homicide'} ,
-                {'label': 'Investigate Person', 'value': 'INVESTIGATE PERSON'} ,
-                {'label': 'Investigate Person', 'value': 'Investigate Person'} ,
-                {'label': 'Investigate Property', 'value': 'Investigate Property'} ,
-                {'label': 'Landlord/Tenant Disputes', 'value': 'Landlord/Tenant Disputes'} ,
-                {'label': 'Larceny', 'value': 'Larceny'} ,
-                {'label': 'Larceny From Motor Vehicle', 'value': 'Larceny From Motor Vehicle'} ,
-                {'label': 'License Plate Related Incidents', 'value': 'License Plate Related Incidents'} ,
-                {'label': 'License Violation', 'value': 'License Violation'} ,
-                {'label': 'Liquor Violation', 'value': 'Liquor Violation'} ,
-                {'label': 'Manslaughter', 'value': 'Manslaughter'} ,
-                {'label': 'Medical Assistance', 'value': 'Medical Assistance'} ,
-                {'label': 'Missing Person Located', 'value': 'Missing Person Located'} ,
-                {'label': 'Missing Person Reported', 'value': 'Missing Person Reported'} ,
-                {'label': 'Motor Vehicle Accident Response', 'value': 'Motor Vehicle Accident Response'} ,
-                {'label': 'Offenses Against Child / Family', 'value': 'Offenses Against Child / Family'} ,
-                {'label': 'Operating Under The Influence', 'value': 'Operating Under the Influence'} ,
-                {'label': 'Other', 'value': 'Other'} ,
-                {'label': 'Other Burglary', 'value': 'Other Burglary'} ,
-                {'label': 'Phone Call Complaints', 'value': 'Phone Call Complaints'} ,
-                {'label': 'Police Service Incidents', 'value': 'Police Service Incidents'} ,
-                {'label': 'Prisoner Related Incidents', 'value': 'Prisoner Related Incidents'} ,
-                {'label': 'Property Found', 'value': 'Property Found'} ,
-                {'label': 'Property Lost', 'value': 'Property Lost'} ,
-                {'label': 'Property Related Damage', 'value': 'Property Related Damage'} ,
-                {'label': 'Prostitution', 'value': 'Prostitution'} ,
-                {'label': 'Recovered Stolen Property', 'value': 'Recovered Stolen Property'} ,
-                {'label': 'Residential Burglary', 'value': 'Residential Burglary'} ,
-                {'label': 'Restraining Order Violations', 'value': 'Restraining Order Violations'} ,
-                {'label': 'Robbery', 'value': 'Robbery'} ,
-                {'label': 'Search Warrants', 'value': 'Search Warrants'} ,
-                {'label': 'Service', 'value': 'Service'} ,
-                {'label': 'Simple Assault', 'value': 'Simple Assault'} ,
-                {'label': 'Towed', 'value': 'Towed'} ,
-                {'label': 'Vandalism', 'value': 'Vandalism'} ,
-                {'label': 'Verbal Disputes', 'value': 'Verbal Disputes'} ,
-                {'label': 'Violations', 'value': 'Violations'} ,
-                {'label': 'Warrant Arrests', 'value': 'Warrant Arrests'}
-            ],
-            value=None, style=dict(width='50%'),
-            multi=True
-            ),
+            
 
-    ])
+            html.Br(),
+            html.P("Select neighbourhoods"),
+            dcc.Dropdown(
+                id = 'neighbourhood-dropdown',
+                    options=[
+                        {'label': 'Brighton', 'value': 'Brighton'},
+                        {'label': 'Charleston', 'value': 'Charleston'},
+                        {'label': 'Dorchester', 'value': 'Dorchester'},
+                        {'label': 'Downtown', 'value': 'Downtown'},
+                        {'label': 'East Boston', 'value': 'East Boston'},
+                        {'label': 'Hyde Park', 'value': 'Hyde Park'},
+                        {'label': 'Jamaica Plain', 'value': 'Jamaica Plain'},
+                        {'label': 'Mattapan', 'value': 'Mattapan'},
+                        {'label': 'Roxbury', 'value': 'Roxbury'},                
+                        {'label': 'South Boston', 'value': 'South Boston'},                
+                        {'label': 'South End', 'value': 'South End'},                
+                        {'label': 'West Roxbury', 'value': 'West Roxbury'}                
+                    ],
+                    value=None, style=dict(width='100%'),
+                    multi=True          
+                    ),
+
+            html.Br(),
+            html.P("Select crimes"),
+            dcc.Dropdown(
+                id = 'crime-dropdown',
+                    options=[
+                        {'label': 'Aggravated Assault', 'value': 'Aggravated Assault'} ,
+                        {'label': 'Aircraft', 'value': 'Aircraft'} ,
+                        {'label': 'Arson', 'value': 'Arson'} ,
+                        {'label': 'Assembly Or Gathering Violations', 'value': 'Assembly or Gathering Violations'} ,
+                        {'label': 'Auto Theft', 'value': 'Auto Theft'} ,
+                        {'label': 'Auto Theft Recovery', 'value': 'Auto Theft Recovery'} ,
+                        {'label': 'Ballistics', 'value': 'Ballistics'} ,
+                        {'label': 'Biological Threat', 'value': 'Biological Threat'} ,
+                        {'label': 'Bomb Hoax', 'value': 'Bomb Hoax'} ,
+                        {'label': 'Burglary - No Property Taken', 'value': 'Burglary - No Property Taken'} ,
+                        {'label': 'Commercial Burglary', 'value': 'Commercial Burglary'} ,
+                        {'label': 'Confidence Games', 'value': 'Confidence Games'} ,
+                        {'label': 'Counterfeiting', 'value': 'Counterfeiting'} ,
+                        {'label': 'Criminal Harassment', 'value': 'Criminal Harassment'} ,
+                        {'label': 'Disorderly Conduct', 'value': 'Disorderly Conduct'} ,
+                        {'label': 'Drug Violation', 'value': 'Drug Violation'} ,
+                        {'label': 'Embezzlement', 'value': 'Embezzlement'} ,
+                        {'label': 'Evading Fare', 'value': 'Evading Fare'} ,
+                        {'label': 'Explosives', 'value': 'Explosives'} ,
+                        {'label': 'Fire Related Reports', 'value': 'Fire Related Reports'} ,
+                        {'label': 'Firearm Discovery', 'value': 'Firearm Discovery'} ,
+                        {'label': 'Firearm Violations', 'value': 'Firearm Violations'} ,
+                        {'label': 'Fraud', 'value': 'Fraud'} ,
+                        {'label': 'Gambling', 'value': 'Gambling'} ,
+                        {'label': 'Home Invasion', 'value': 'HOME INVASION'} ,
+                        {'label': 'Human Trafficking', 'value': 'HUMAN TRAFFICKING'} ,
+                        {'label': 'Human Trafficking - Involuntary Servitude', 'value': 'HUMAN TRAFFICKING - INVOLUNTARY SERVITUDE'} ,
+                        {'label': 'Harassment', 'value': 'Harassment'} ,
+                        {'label': 'Harbor Related Incidents', 'value': 'Harbor Related Incidents'} ,
+                        {'label': 'Homicide', 'value': 'Homicide'} ,
+                        {'label': 'Investigate Person', 'value': 'INVESTIGATE PERSON'} ,
+                        {'label': 'Investigate Person', 'value': 'Investigate Person'} ,
+                        {'label': 'Investigate Property', 'value': 'Investigate Property'} ,
+                        {'label': 'Landlord/Tenant Disputes', 'value': 'Landlord/Tenant Disputes'} ,
+                        {'label': 'Larceny', 'value': 'Larceny'} ,
+                        {'label': 'Larceny From Motor Vehicle', 'value': 'Larceny From Motor Vehicle'} ,
+                        {'label': 'License Plate Related Incidents', 'value': 'License Plate Related Incidents'} ,
+                        {'label': 'License Violation', 'value': 'License Violation'} ,
+                        {'label': 'Liquor Violation', 'value': 'Liquor Violation'} ,
+                        {'label': 'Manslaughter', 'value': 'Manslaughter'} ,
+                        {'label': 'Medical Assistance', 'value': 'Medical Assistance'} ,
+                        {'label': 'Missing Person Located', 'value': 'Missing Person Located'} ,
+                        {'label': 'Missing Person Reported', 'value': 'Missing Person Reported'} ,
+                        {'label': 'Motor Vehicle Accident Response', 'value': 'Motor Vehicle Accident Response'} ,
+                        {'label': 'Offenses Against Child / Family', 'value': 'Offenses Against Child / Family'} ,
+                        {'label': 'Operating Under The Influence', 'value': 'Operating Under the Influence'} ,
+                        {'label': 'Other', 'value': 'Other'} ,
+                        {'label': 'Other Burglary', 'value': 'Other Burglary'} ,
+                        {'label': 'Phone Call Complaints', 'value': 'Phone Call Complaints'} ,
+                        {'label': 'Police Service Incidents', 'value': 'Police Service Incidents'} ,
+                        {'label': 'Prisoner Related Incidents', 'value': 'Prisoner Related Incidents'} ,
+                        {'label': 'Property Found', 'value': 'Property Found'} ,
+                        {'label': 'Property Lost', 'value': 'Property Lost'} ,
+                        {'label': 'Property Related Damage', 'value': 'Property Related Damage'} ,
+                        {'label': 'Prostitution', 'value': 'Prostitution'} ,
+                        {'label': 'Recovered Stolen Property', 'value': 'Recovered Stolen Property'} ,
+                        {'label': 'Residential Burglary', 'value': 'Residential Burglary'} ,
+                        {'label': 'Restraining Order Violations', 'value': 'Restraining Order Violations'} ,
+                        {'label': 'Robbery', 'value': 'Robbery'} ,
+                        {'label': 'Search Warrants', 'value': 'Search Warrants'} ,
+                        {'label': 'Service', 'value': 'Service'} ,
+                        {'label': 'Simple Assault', 'value': 'Simple Assault'} ,
+                        {'label': 'Towed', 'value': 'Towed'} ,
+                        {'label': 'Vandalism', 'value': 'Vandalism'} ,
+                        {'label': 'Verbal Disputes', 'value': 'Verbal Disputes'} ,
+                        {'label': 'Violations', 'value': 'Violations'} ,
+                        {'label': 'Warrant Arrests', 'value': 'Warrant Arrests'}
+                    ],
+                    value=None, style=dict(width='100%'),
+                    multi=True
+                    ),
+        ]),
+            # MAIN PLOTS
+            html.Div(className = "ten columns", style = {"backgroundColor": colors['white'], "padding": 20}, children=[
+
+                html.Iframe(
+                    sandbox='allow-scripts',
+                    id='choro-plot',
+                    height='500',
+                    width='500',
+                    style={'border-width': '0px'},
+                    ),
+
+                html.Iframe(
+                    sandbox='allow-scripts',
+                    id='trend-plot',
+                    height='500',
+                    width='500',
+                    style={'border-width': '0px'},
+                    ),
+
+                html.Iframe(
+                    sandbox='allow-scripts',
+                    id='heatmap-plot',
+                    height='500',
+                    width='500',
+                    style={'border-width': '0px'},
+                    ),
+                
+                html.Iframe(
+                    sandbox='allow-scripts',
+                    id='bar-plot',
+                    height='500',
+                    width='500',
+                    style={'border-width': '0px'},
+                    ),
+
+            ])
+    
+        ])
+])
 
 @app.callback(
         dash.dependencies.Output('choro-plot', 'srcDoc'),
