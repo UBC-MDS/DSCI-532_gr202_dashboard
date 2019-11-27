@@ -8,7 +8,7 @@ import geopandas as gpd
 import json
 # alt.data_transformers.disable_max_rows()
 # alt.data_transformers.enable('json')
-alt.data_transformers.enable('data_server')
+alt.data_transformers.enable('data_server_proxied')
 
 # LOAD IN DATASETS
 geo_json_file_loc= 'data/Boston_Neighborhoods.geojson'
@@ -140,7 +140,7 @@ def crime_bar_chart(df):
 def boston_map(df):
     boston_map = gen_map(geodata = df, 
                         color_column='properties.YEAR', 
-                        color_scheme='yelloworangered',
+                       # color_scheme='yelloworangered',
                         title = "Crime Counts in Boston Neighrbourhoods",
                         tooltip = [alt.Tooltip('properties.Name:O', title = 'Neighbourhood'),
                                     alt.Tooltip('properties.YEAR:Q', title = 'Crime Count')])
@@ -325,7 +325,6 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
                 id = 'neighbourhood-dropdown',
                     options=[
                         {'label': 'Brighton', 'value': 'Brighton'},
-                        {'label': 'Charleston', 'value': 'Charleston'},
                         {'label': 'Dorchester', 'value': 'Dorchester'},
                         {'label': 'Downtown', 'value': 'Downtown'},
                         {'label': 'East Boston', 'value': 'East Boston'},
