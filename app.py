@@ -117,7 +117,7 @@ def gen_map(geodata, color_column, title, tooltip):
         alt.Color(color_column, 
                   type='quantitative', 
                   scale=alt.Scale(),
-                  title = "Crime counts"),
+                  title = "Crime Counts"),
          tooltip=tooltip
     )
     return base + choro
@@ -285,7 +285,7 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
 
     # HEADER
     html.Div(className = 'row', style = {'backgroundColor': colors["ubc_blue"], "padding" : 10}, children = [
-        html.H2('Boston Crime Dashboard App', style={'color' : colors["white"]})
+        html.H2('Boston Crime Dashboard', style={'color' : colors["white"]})
     ]),
     
     # BODY
@@ -293,7 +293,7 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
 
          #SIDE BAR
         html.Div(className = "two columns", style = {'padding': 20}, children= [
-            html.P("Select a range of years"),
+            html.P("Filter by Year"),
             dcc.RangeSlider(
                     id = 'year-slider',
                     min=2015,
@@ -308,7 +308,7 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
                     value=[2015,2018],
             ),
             html.Br(),
-            html.P("Select a range of months"),
+            html.P("Filter by Month"),
             dcc.RangeSlider(
                 id = 'month-slider',
                 min=1,
@@ -334,7 +334,7 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
             
 
             html.Br(),
-            html.P("Select neighbourhoods"),
+            html.P("Filter by Neighbourhood"),
             dcc.Dropdown(
                 id = 'neighbourhood-dropdown',
                     options=[
@@ -355,7 +355,7 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
                     ),
 
             html.Br(),
-            html.P("Select crimes"),
+            html.P("Filter by Crime"),
             dcc.Dropdown(
                 id = 'crime-dropdown',
                     options=[
