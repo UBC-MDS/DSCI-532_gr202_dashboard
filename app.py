@@ -6,9 +6,9 @@ import altair as alt
 import pandas as pd
 import geopandas as gpd
 import json
-# alt.data_transformers.disable_max_rows()
+alt.data_transformers.disable_max_rows()
 # alt.data_transformers.enable('json')
-alt.data_transformers.enable('data_server')
+#alt.data_transformers.enable('data_server')
 
 # LOAD IN DATASETS
 geo_json_file_loc= 'data/Boston_Neighborhoods.geojson'
@@ -85,8 +85,14 @@ def year_filter(year = None):
 
 # use the filtered dataframe to create the map
 # create the geo pandas merged dataframe
-def create_merged_gdf(df, gdf):
+def create_merged_gdf(df, gdf, neighbourhood):
     df = df.groupby(by = 'DISTRICT').agg("count")
+    if neighbourhood != None:
+        neighbourhood = list(neighbourhood)
+        for index_label, row_series in df.iterrows():
+        # For each row update the 'Bonus' value to it's double
+            if index_label not in neighbourhood:
+                df.at[index_label , 'YEAR'] = None
     gdf = gdf.merge(df, left_on='Name', right_on='DISTRICT', how='inner')
     return gdf
 
@@ -252,8 +258,8 @@ alt.themes.enable('mds_special')
 
 ## wrap all the other functions
 def make_choro_plot(df, gdf, year = None, month = None, neighbourhood = None, crime = None):
-    df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood, crime = crime)
-    gdf = create_merged_gdf(df, gdf)
+    df = chart_filter(df, year = year, month = month, crime = crime)
+    gdf = create_merged_gdf(df, gdf, neighbourhood = neighbourhood)
     choro_data = create_geo_data(gdf)
     return  boston_map(choro_data)
 
