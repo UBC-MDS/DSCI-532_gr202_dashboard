@@ -135,13 +135,11 @@ def crime_bar_chart(df):
     df = df[df['OFFENSE_CODE_GROUP'].isin(df_year_grouped.index)]
     
     crime_type_chart = alt.Chart(df).mark_bar().encode(
-        y = alt.X('OFFENSE_CODE_GROUP:O', title = "Type of Offense", sort=alt.EncodingSortField(op="count", order='descending')),
-        x = alt.Y('count():Q', title = "Number of Crimes")
-    ).properties(
-        width=500,
-        height=200, 
-        title = "Crime Counts by Type"
-    )
+        y = alt.X('OFFENSE_CODE_GROUP:O', title = "Crime", sort=alt.EncodingSortField(op="count", order='descending')),
+        x = alt.Y('count():Q', title = "Number of Crimes"),
+        tooltip = [alt.Tooltip('OFFENSE_CODE_GROUP:O', title = 'Crime'),
+                    alt.Tooltip('count():Q', title = 'Crime Count')]
+    ).properties(title = "Crime Counts by Type")
     return crime_type_chart
 
 def boston_map(df):
@@ -184,7 +182,10 @@ def heatmap(df):
                   sort = ["Monday", "Tuesday", "Wednesday", 
                         "Thursday", "Friday", "Saturday", "Sunday"],
                   title = "Day of Week"),
-        color = alt.Color('count()', legend = alt.Legend(title = "Crime Count"))
+        color = alt.Color('count()', legend = alt.Legend(title = "Crime Count")),
+        tooltip = [alt.Tooltip('DAY_OF_WEEK:O', title = 'Day'),
+                   alt.Tooltip('HOUR:O', title = 'Hour'),
+                    alt.Tooltip('count()', title = 'Crime Count')]
     ).properties(title = "Occurence of Crime by Hour and Day"
     ).configure_legend(labelFontSize=14, titleFontSize=16)
     return heatmap
@@ -403,7 +404,7 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
                         {'label': 'Missing Person Located', 'value': 'Missing Person Located'} ,
                         {'label': 'Missing Person Reported', 'value': 'Missing Person Reported'} ,
                         {'label': 'Motor Vehicle Accident', 'value': 'Motor Vehicle Accident Response'} ,
-                        {'label': 'Offenses Against Child / Family', 'value': 'Offenses Against Child / Family'} ,
+                        {'label': 'Offenses Against Child/Family', 'value': 'Offenses Against Child / Family'} ,
                         {'label': 'Operating Under the Influence', 'value': 'Operating Under the Influence'} ,
                         {'label': 'Other', 'value': 'Other'} ,
                         {'label': 'Other Burglary', 'value': 'Other Burglary'} ,
