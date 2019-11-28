@@ -122,7 +122,7 @@ def gen_map(geodata, color_column, title, tooltip):
     )
     return base + choro
 
-# create bar graph function
+# create plot functions
 def crime_bar_chart(df):
     #    df_year = df.query('YEAR == @year')
     #    if (district != None):
@@ -140,16 +140,15 @@ def crime_bar_chart(df):
     ).properties(
         width=500,
         height=200, 
-        title = "Total Crime Counts In Boston by Type"
+        title = "Crime Counts by Type"
     )
     return crime_type_chart
 
-# create plot functions
 def boston_map(df):
     boston_map = gen_map(geodata = df, 
                         color_column='properties.YEAR', 
                        # color_scheme='yelloworangered',
-                        title = "Crime Counts in Boston Neighbourhoods",
+                        title = "Crime Counts by Neighbourhood",
                         tooltip = [alt.Tooltip('properties.Name:O', title = 'Neighbourhood'),
                                     alt.Tooltip('properties.YEAR:Q', title = 'Crime Count')]
     ).configure_legend(labelFontSize=14, titleFontSize=16)
@@ -168,13 +167,13 @@ def trendgraph(df, filter_1_year = True):
     trendgraph = alt.Chart(dfg
     ).mark_line().encode(
         x = alt.X("date:T", 
-                  title = "Time",
+                  title = "Date",
                  axis = alt.Axis(labelAngle = 0, format = year_format)),
         y = alt.Y('OFFENSE_CODE_GROUP:Q', title = "Occurence of Crime"),
         tooltip = [alt.Tooltip('YEAR:O', title = 'Year'),
                    alt.Tooltip('MONTH:O', title = 'Month'),
                     alt.Tooltip('OFFENSE_CODE_GROUP:Q', title = 'Crime Count')]
-    ).properties(title = "Trend of Crime Over time")
+    ).properties(title = "Crime Trend")
     return trendgraph + trendgraph.mark_point()
 
 def heatmap(df):
@@ -185,8 +184,8 @@ def heatmap(df):
                   sort = ["Monday", "Tuesday", "Wednesday", 
                         "Thursday", "Friday", "Saturday", "Sunday"],
                   title = "Day of Week"),
-        color = alt.Color('count()', legend = alt.Legend(title = ""))
-    ).properties(title = "Occurence of Crime by Hour and Day in Boston"
+        color = alt.Color('count()', legend = alt.Legend(title = "Crime Count"))
+    ).properties(title = "Occurence of Crime by Hour and Day"
     ).configure_legend(labelFontSize=14, titleFontSize=16)
     return heatmap
 
@@ -363,7 +362,7 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
                         {'label': 'Aggravated Assault', 'value': 'Aggravated Assault'} ,
                         {'label': 'Aircraft', 'value': 'Aircraft'} ,
                         {'label': 'Arson', 'value': 'Arson'} ,
-                        {'label': 'Assembly Or Gathering Violations', 'value': 'Assembly or Gathering Violations'} ,
+                        {'label': 'Assembly or Gathering Violations', 'value': 'Assembly or Gathering Violations'} ,
                         {'label': 'Auto Theft', 'value': 'Auto Theft'} ,
                         {'label': 'Auto Theft Recovery', 'value': 'Auto Theft Recovery'} ,
                         {'label': 'Ballistics', 'value': 'Ballistics'} ,
@@ -403,9 +402,9 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
                         {'label': 'Medical Assistance', 'value': 'Medical Assistance'} ,
                         {'label': 'Missing Person Located', 'value': 'Missing Person Located'} ,
                         {'label': 'Missing Person Reported', 'value': 'Missing Person Reported'} ,
-                        {'label': 'Motor Vehicle Accident Response', 'value': 'Motor Vehicle Accident Response'} ,
+                        {'label': 'Motor Vehicle Accident', 'value': 'Motor Vehicle Accident Response'} ,
                         {'label': 'Offenses Against Child / Family', 'value': 'Offenses Against Child / Family'} ,
-                        {'label': 'Operating Under The Influence', 'value': 'Operating Under the Influence'} ,
+                        {'label': 'Operating Under the Influence', 'value': 'Operating Under the Influence'} ,
                         {'label': 'Other', 'value': 'Other'} ,
                         {'label': 'Other Burglary', 'value': 'Other Burglary'} ,
                         {'label': 'Phone Call Complaints', 'value': 'Phone Call Complaints'} ,
