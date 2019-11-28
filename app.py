@@ -6,9 +6,9 @@ import altair as alt
 import pandas as pd
 import geopandas as gpd
 import json
-# alt.data_transformers.disable_max_rows()
+alt.data_transformers.disable_max_rows()
 # alt.data_transformers.enable('json')
-alt.data_transformers.enable('data_server')
+#alt.data_transformers.enable('data_server')
 
 # LOAD IN DATASETS
 geo_json_file_loc= 'data/Boston_Neighborhoods.geojson'
