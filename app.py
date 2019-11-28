@@ -75,6 +75,14 @@ def chart_filter(df, year = None, month = None, neighbourhood = None, crime = No
             filtered_df = filtered_df.query('OFFENSE_CODE_GROUP == "%s"' % crime)       
     return filtered_df
 
+# determine whether the input year is single value or not
+def year_filter(year = None):
+    if year[0] == year[1]:
+        single_year = True
+    else:
+        single_year = False
+    return single_year
+
 # use the filtered dataframe to create the map
 # create the geo pandas merged dataframe
 def create_merged_gdf(df, gdf):
@@ -88,7 +96,7 @@ def create_geo_data(gdf):
     return choro_data
 
 # mapping function based on all of the above
-def gen_map(geodata, color_column, title, tooltip, color_scheme='bluegreen'):
+def gen_map(geodata, color_column, title, tooltip):
     '''
         Generates Boston neighbourhoods map with building count choropleth
     '''
@@ -108,7 +116,7 @@ def gen_map(geodata, color_column, title, tooltip, color_scheme='bluegreen'):
     ).encode(
         alt.Color(color_column, 
                   type='quantitative', 
-                  scale=alt.Scale(scheme=color_scheme),
+                  scale=alt.Scale(),
                   title = "Crime counts"),
          tooltip=tooltip
     )
@@ -148,21 +156,25 @@ def boston_map(df):
     return boston_map
 
 
-def trendgraph(df):
+def trendgraph(df, filter_1_year = True):
     dfg = df.groupby(['YEAR', 'MONTH']).count().reset_index()
+    dfg['date'] = pd.to_datetime({'year': dfg['YEAR'],
+                             'month': dfg['MONTH'],
+                             'day': 1})
+    if filter_1_year == True:
+        year_format = "%b"
+    else:
+        year_format = "%b %y"
     trendgraph = alt.Chart(dfg
-    ).transform_calculate(
-        date = 'datetime(datum.YEAR, datum.MONTH, 1)' 
     ).mark_line().encode(
         x = alt.X("date:T", 
                   title = "Time",
-                 axis = alt.Axis(labelAngle = 0)),
+                 axis = alt.Axis(labelAngle = 0, format = year_format)),
         y = alt.Y('OFFENSE_CODE_GROUP:Q', title = "Occurence of Crime"),
-        tooltip = [alt.Tooltip('date:T', title = 'Date'),
+        tooltip = [alt.Tooltip('YEAR:O', title = 'Year'),
+                   alt.Tooltip('MONTH:O', title = 'Month'),
                     alt.Tooltip('OFFENSE_CODE_GROUP:Q', title = 'Crime Count')]
-    ).properties(title = "Trend of Crime Over time",
-                width = 600,
-                height = 300)
+    ).properties(title = "Trend of Crime Over time")
     return trendgraph + trendgraph.mark_point()
 
 def heatmap(df):
@@ -245,9 +257,10 @@ def make_choro_plot(df, gdf, year = None, month = None, neighbourhood = None, cr
     choro_data = create_geo_data(gdf)
     return  boston_map(choro_data)
 
-def trend_plot(df, year = None, neighbourhood = None, crime = None):
+def make_trend_plot(df, year = None, neighbourhood = None, crime = None):
     df = chart_filter(df, year = year, neighbourhood = neighbourhood, crime = crime)
-    return  trendgraph(df)
+    single_year = year_filter(year = year)
+    return  trendgraph(df, filter_1_year = single_year)
 
 def make_heatmap_plot(df, year = None, month = None, neighbourhood = None, crime = None):
     df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood, crime = crime)
@@ -476,7 +489,7 @@ def update_choro_plot(year_value, month_value, neighbourhood_value, crime_value)
        dash.dependencies.Input('crime-dropdown', 'value')])
 
 def update_trend_plot(year_value, neighbourhood_value, crime_value):
-    return trend_plot(df, year = year_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
+    return make_trend_plot(df, year = year_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
 
 @app.callback(
         dash.dependencies.Output('heatmap-plot', 'srcDoc'),
