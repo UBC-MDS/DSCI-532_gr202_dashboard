@@ -112,7 +112,7 @@ def gen_map(geodata, color_column, title, tooltip):
         strokeWidth=1
     ).encode(
     ).properties(
-        width=300,
+        width=500,
         height=300
     )
     # Add Choropleth Layer
@@ -123,7 +123,7 @@ def gen_map(geodata, color_column, title, tooltip):
         alt.Color(color_column, 
                   type='quantitative', 
                   scale=alt.Scale(),
-                  title = "Crime Counts"),
+                  title = "Crime Count"),
          tooltip=tooltip
     )
     return base + choro
@@ -142,20 +142,21 @@ def crime_bar_chart(df):
     
     crime_type_chart = alt.Chart(df).mark_bar().encode(
         y = alt.X('OFFENSE_CODE_GROUP:O', title = "Crime", sort=alt.EncodingSortField(op="count", order='descending')),
-        x = alt.Y('count():Q', title = "Number of Crimes"),
+        x = alt.Y('count():Q', title = "Crime Count"),
         tooltip = [alt.Tooltip('OFFENSE_CODE_GROUP:O', title = 'Crime'),
                     alt.Tooltip('count():Q', title = 'Crime Count')]
-    ).properties(title = "Crime Counts by Type")
+    ).properties(title = "Crime Count by Type", width=400, height=250)
     return crime_type_chart
 
 def boston_map(df):
     boston_map = gen_map(geodata = df, 
                         color_column='properties.YEAR', 
                        # color_scheme='yelloworangered',
-                        title = "Crime Counts by Neighbourhood",
+                        title = "Crime Count by Neighbourhood",
                         tooltip = [alt.Tooltip('properties.Name:O', title = 'Neighbourhood'),
                                     alt.Tooltip('properties.YEAR:Q', title = 'Crime Count')]
-    ).configure_legend(labelFontSize=14, titleFontSize=16)
+    ).configure_legend(labelFontSize=14, titleFontSize=16
+    ).configure_view(strokeOpacity=0)
     return boston_map
 
 
@@ -173,11 +174,11 @@ def trendgraph(df, filter_1_year = True):
         x = alt.X("date:T", 
                   title = "Date",
                  axis = alt.Axis(labelAngle = 0, format = year_format)),
-        y = alt.Y('OFFENSE_CODE_GROUP:Q', title = "Occurence of Crime"),
+        y = alt.Y('OFFENSE_CODE_GROUP:Q', title = "Crime Count"),
         tooltip = [alt.Tooltip('YEAR:O', title = 'Year'),
                    alt.Tooltip('MONTH:O', title = 'Month'),
                     alt.Tooltip('OFFENSE_CODE_GROUP:Q', title = 'Crime Count')]
-    ).properties(title = "Crime Trend")
+    ).properties(title = "Crime Trend", width=500, height=250)
     return trendgraph + trendgraph.mark_point()
 
 def heatmap(df):
@@ -192,7 +193,7 @@ def heatmap(df):
         tooltip = [alt.Tooltip('DAY_OF_WEEK:O', title = 'Day'),
                    alt.Tooltip('HOUR:O', title = 'Hour'),
                     alt.Tooltip('count()', title = 'Crime Count')]
-    ).properties(title = "Occurence of Crime by Hour and Day"
+    ).properties(title = "Occurence of Crime by Hour and Day", width=400, height=250
     ).configure_legend(labelFontSize=14, titleFontSize=16)
     return heatmap
 
@@ -211,7 +212,7 @@ def mds_special():
                 },
                 'view': {
                     "height": 300, 
-                    "width": 400
+                    "width": 300
                 },
                 "axisX": {
                     "domain": True,
@@ -293,7 +294,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
     # HEADER
     html.Div(className = 'row', style = {'backgroundColor': colors["ubc_blue"], "padding" : 10}, children = [
         html.H2('Boston Crime Dashboard', style={'color' : colors["white"]}),
-        html.P("This is a random blurb about the app, the app will help users explore crime counts in Boston.",
+        html.P("This Dash app allows users to explore and analyze crime trends in Boston. The data set consists of over 300,000 Boston crime records between 2015 and 2018. Simply drag the sliders to select your desired time range. Select one or multiple values from the drop down menus to select which neighbourhoods or crimes you would like to explore. These options will filter all the graphs in the dashboard, with the exception of the Crime Trend plot which has a static month selection.",
         style={'color' : colors["white"]})
     ]),
     
@@ -472,7 +473,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
                     sandbox='allow-scripts',
                     id='choro-plot',
                     height='400',
-                    width='500',
+                    width='700',
                     style={'border-width': '0px'},
                     ),
 
@@ -480,7 +481,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
                     sandbox='allow-scripts',
                     id='trend-plot',
                     height='400',
-                    width='500',
+                    width='700',
                     style={'border-width': '0px'},
                     ),
 
@@ -492,7 +493,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
                     sandbox='allow-scripts',
                     id='heatmap-plot',
                     height='400',
-                    width='500',
+                    width='700',
                     style={'border-width': '0px'},
                     ),
                 
@@ -500,7 +501,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
                     sandbox='allow-scripts',
                     id='bar-plot',
                     height='400',
-                    width='500',
+                    width='700',
                     style={'border-width': '0px'},
                     ),
 
