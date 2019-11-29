@@ -87,12 +87,13 @@ def year_filter(year = None):
 # create the geo pandas merged dataframe
 def create_merged_gdf(df, gdf, neighbourhood):
     df = df.groupby(by = 'DISTRICT').agg("count")
-    if neighbourhood != None:
-        neighbourhood = list(neighbourhood)
-        for index_label, row_series in df.iterrows():
-        # For each row update the 'Bonus' value to it's double
-            if index_label not in neighbourhood:
-                df.at[index_label , 'YEAR'] = None
+    if neighbourhood != []:
+        if neighbourhood != None:
+            neighbourhood = list(neighbourhood)
+            for index_label, row_series in df.iterrows():
+            # For each row update the 'Bonus' value to it's double
+                if index_label not in neighbourhood:
+                    df.at[index_label , 'YEAR'] = None
     gdf = gdf.merge(df, left_on='Name', right_on='DISTRICT', how='inner')
     return gdf
 
