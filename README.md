@@ -24,5 +24,5 @@ If you would like to make any contribution to our app, you can fork this repo an
 
 Please note all contributors must abide by our [CODE OF CONDUCT](./CODE_OF_CONDUCT.md).
 
-
-
+### References
+[Creating choropleth maps in Altair](https://medium.com/dataexplorations/creating-choropleth-maps-in-altair-eeb7085779a1)
