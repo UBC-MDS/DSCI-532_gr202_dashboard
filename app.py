@@ -113,7 +113,7 @@ def gen_map(geodata, color_column, title, tooltip):
         strokeWidth=1
     ).encode(
     ).properties(
-        width=500,
+        width=350,
         height=300
     )
     # Add Choropleth Layer
@@ -131,13 +131,7 @@ def gen_map(geodata, color_column, title, tooltip):
 
 # create plot functions
 def crime_bar_chart(df):
-    #    df_year = df.query('YEAR == @year')
-    #    if (district != None):
-    #        df_year = df_year.query('DISTRICT == @district')
-    #    df_year = df_year.query('MONTH == @month')
-    #    df_year_smaller = df_year[["OFFENSE_CODE_GROUP", "DISTRICT", "SHOOTING", "YEAR",
-    #                      "MONTH", "DAY_OF_WEEK", "HOUR", "STREET", "Lat", "Long", "Location"]]
-    
+
     df_year_grouped = df.groupby('OFFENSE_CODE_GROUP').size().sort_values(ascending = False)[:10]
     df = df[df['OFFENSE_CODE_GROUP'].isin(df_year_grouped.index)]
     
@@ -146,7 +140,7 @@ def crime_bar_chart(df):
         x = alt.Y('count():Q', title = "Crime Count"),
         tooltip = [alt.Tooltip('OFFENSE_CODE_GROUP:O', title = 'Crime'),
                     alt.Tooltip('count():Q', title = 'Crime Count')]
-    ).properties(title = "Crime Count by Type", width=400, height=250)
+    ).properties(title = "Crime Count by Type", width=250, height=250)
     return crime_type_chart
 
 def boston_map(df):
@@ -179,7 +173,7 @@ def trendgraph(df, filter_1_year = True):
         tooltip = [alt.Tooltip('YEAR:O', title = 'Year'),
                    alt.Tooltip('MONTH:O', title = 'Month'),
                     alt.Tooltip('OFFENSE_CODE_GROUP:Q', title = 'Crime Count')]
-    ).properties(title = "Crime Trend", width=500, height=250)
+    ).properties(title = "Crime Trend", width=350, height=250)
     return trendgraph + trendgraph.mark_point()
 
 def heatmap(df):
@@ -194,7 +188,7 @@ def heatmap(df):
         tooltip = [alt.Tooltip('DAY_OF_WEEK:O', title = 'Day'),
                    alt.Tooltip('HOUR:O', title = 'Hour'),
                     alt.Tooltip('count()', title = 'Crime Count')]
-    ).properties(title = "Occurence of Crime by Hour and Day", width=400, height=250
+    ).properties(title = "Occurence of Crime by Hour and Day", width=200, height=250
     ).configure_legend(labelFontSize=14, titleFontSize=16)
     return heatmap
 
@@ -474,7 +468,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
                     sandbox='allow-scripts',
                     id='choro-plot',
                     height='400',
-                    width='700',
+                    width='500',
                     style={'border-width': '0px'},
                     ),
 
@@ -482,7 +476,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
                     sandbox='allow-scripts',
                     id='trend-plot',
                     height='400',
-                    width='700',
+                    width='500',
                     style={'border-width': '0px'},
                     ),
 
@@ -494,7 +488,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
                     sandbox='allow-scripts',
                     id='heatmap-plot',
                     height='400',
-                    width='700',
+                    width='500',
                     style={'border-width': '0px'},
                     ),
                 
@@ -502,7 +496,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
                     sandbox='allow-scripts',
                     id='bar-plot',
                     height='400',
-                    width='700',
+                    width='500',
                     style={'border-width': '0px'},
                     ),
 
