@@ -500,7 +500,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
                     sandbox='allow-scripts',
                     id='bar-plot',
                     height='400',
-                    width='500',
+                    width='1000',
                     style={'border-width': '0px'},
                     ),
 
@@ -508,7 +508,12 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
             
             ]),
     
-        ])
+        ]),
+    # FOOTER
+    html.Div(className = 'row', style = {'backgroundColor': colors["light_grey"], "padding" : 4}, children = [
+        html.P("This dashboard was made collaboratively by the DSCI 532 Group 202 in 2019.",
+        style={'color' : colors["ubc_blue"]})
+    ]),
 ])
 
 @app.callback(
