@@ -500,7 +500,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
                     sandbox='allow-scripts',
                     id='bar-plot',
                     height='400',
-                    width='1000',
+                    width='500',
                     style={'border-width': '0px'},
                     ),
 
