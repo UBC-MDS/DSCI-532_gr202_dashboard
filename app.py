@@ -288,18 +288,20 @@ colors = {"white": "#ffffff",
           "ubc_blue": "#082145"
           }
 
-app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children = [
+app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
 
     # HEADER
     html.Div(className = 'row', style = {'backgroundColor': colors["ubc_blue"], "padding" : 10}, children = [
-        html.H2('Boston Crime Dashboard', style={'color' : colors["white"]})
+        html.H2('Boston Crime Dashboard', style={'color' : colors["white"]}),
+        html.P("This is a random blurb about the app, the app will help users explore crime counts in Boston.",
+        style={'color' : colors["white"]})
     ]),
     
     # BODY
     html.Div(className = "row", children = [
 
          #SIDE BAR
-        html.Div(className = "two columns", style = {'padding': 20}, children= [
+        html.Div(className = "two columns", style = {'backgroundColor': colors['light_grey'], 'padding': 20}, children= [ 
             html.P("Filter by Year"),
             dcc.RangeSlider(
                     id = 'year-slider',
@@ -437,14 +439,39 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
                     value=None, style=dict(width='100%'),
                     multi=True
                     ),
+               html.Br(),
+               html.Br(),
+               html.Br(),
+               html.Br(),
+               html.Br(),
+               html.Br(), 
+               html.Br(),
+               html.Br(),
+               html.Br(),
+               html.Br(),
+               html.Br(),
+               html.Br(), 
+               html.Br(),
+               html.Br(),
+               html.Br(),
+               html.Br(),
+               html.Br(),
+               html.Br(), 
+               html.Br(),
+               html.Br(),
+               html.Br(),
+               html.Br(),
+               html.Br(),
+               html.Br(), 
         ]),
             # MAIN PLOTS
-            html.Div(className = "ten columns", style = {"backgroundColor": colors['white'], "padding": 20}, children=[
+            html.Div(className = "row", children = [
+                html.Div(className = "five columns", children=[
 
                 html.Iframe(
                     sandbox='allow-scripts',
                     id='choro-plot',
-                    height='500',
+                    height='400',
                     width='500',
                     style={'border-width': '0px'},
                     ),
@@ -452,15 +479,19 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
                 html.Iframe(
                     sandbox='allow-scripts',
                     id='trend-plot',
-                    height='500',
+                    height='400',
                     width='500',
                     style={'border-width': '0px'},
                     ),
 
+            ]),
+
+            html.Div(className = "five columns",  children = [
+
                 html.Iframe(
                     sandbox='allow-scripts',
                     id='heatmap-plot',
-                    height='500',
+                    height='400',
                     width='500',
                     style={'border-width': '0px'},
                     ),
@@ -468,12 +499,14 @@ app.layout = html.Div(style={'backgroundColor': colors['light_grey']}, children 
                 html.Iframe(
                     sandbox='allow-scripts',
                     id='bar-plot',
-                    height='500',
+                    height='400',
                     width='500',
                     style={'border-width': '0px'},
                     ),
 
             ])
+            
+            ]),
     
         ])
 ])
