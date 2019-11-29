@@ -10,4 +10,8 @@
 - A potential future addition is to include more plots. In addition, to categorize the plots, so similar plots can be placed together. For instance, plots relating to when crimes occurs (time of date, month and etc) can be put into a tab by itself. While plots relating to where crimes occurs can be put into another tab. This might help the user digest the information provided to them easier. In addition, it might help speed up load time. 
 
 ### Github Issues
-- Whenever a team member spotted a bug or issue related to the app, they will create a GitHub issue. A succinct and descriptive message regarding the problem is written. In which, other team members can attempt to fix the problem. After the problem is fixed, the specific commit will be referenced to that issue. 
+- Teammate Issues 
+  - Whenever a team member spotted a bug or issue related to the app, they created a GitHub issue. A succinct and descriptive message regarding the problem is written. In which, other team members can attempt to fix the problem. After the problem is fixed, the specific commit was referenced to that issue. 
+- TA Issues
+  - Teamwork contract have been updated in individual repo to be more specific as per request of TA.
+  - [Proposal](https://github.com/UBC-MDS/DSCI-532_gr202_dashboard/blob/master/Proposal.md) have been updated to reference count instead of density and count instead of rates. 
