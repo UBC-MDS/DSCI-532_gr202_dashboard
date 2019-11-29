@@ -5,7 +5,8 @@
 - The app is responsive to the sliders and dropdown menus. Every graph updates in order to display the user’s selected options. The graphs updates very quickly to change in user options.
   
 ### Critiques and Future Improvements 
-- It loads too slowly on Heroku. It takes over 10 seconds to load every single plot. A potential improvement is to subset the dataset, so we don’t have to load the entire dataset. Another solution is to make tabs to house different plots, so all four plots aren’t displayed on the same page. 
+- It loads too slowly on Heroku. It takes over 10 seconds to load every single plot. A potential improvement is to subset the dataset, so we don’t have to load the entire dataset. Another solution is to make tabs to house different plots, so all four plots aren’t displayed on the same page.
+  - The app loads very quickly locally when altair's data server is enabled with `alt.data_transformers.enable('data_server')`. However, this functionality does not work with Heroku as per our [discussion](https://github.com/altair-viz/altair_data_server/issues/11) with the creator of this function.
 - On a smaller display 13”, the plots can’t be fully displayed, the user has to horizontally scroll the plot in order to see the entire content of the plot. A potential solution for this is to have tabs to house different plots. 
 - A potential future addition is to include more plots. In addition, to categorize the plots, so similar plots can be placed together. For instance, plots relating to when crimes occurs (time of date, month and etc) can be put into a tab by itself. While plots relating to where crimes occurs can be put into another tab. This might help the user digest the information provided to them easier. In addition, it might help speed up load time. 
 
