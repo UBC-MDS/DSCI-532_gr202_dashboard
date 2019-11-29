@@ -15,5 +15,7 @@
   - Whenever a team member spotted a bug or issue related to the app, they created a GitHub issue. A succinct and descriptive message regarding the problem was written. In which, other team members attempted to fix the problem. After the problem was fixed, the specific commit was referenced to that issue. 
 - TA Issues
   - Fixed references of 'density' to 'count' and 'rates' to 'count' in proposal and REAMDE to reflect updated project scope.
-  - Updated Team Contract in personal repos, to be more specific about division or work and deadlines. 
+  - Updated Team Contract in personal repos, to be more specific about division of work and deadlines. 
+
+
 
