@@ -15,7 +15,10 @@ alt.data_transformers.disable_max_rows()
 #alt.data_transformers.enable('data_server')
 
 geo_json_file_loc= 'data/Boston_Neighborhoods.geojson'
+<<<<<<< HEAD
 
+=======
+>>>>>>> upstream/master
 
 gdf = get_gpd_df()
 # Import boston crimes
@@ -189,7 +192,10 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
     # FOOTER
     html.Div(className = 'row', style = {'backgroundColor': colors["light_grey"], "padding" : 4}, children = [
         html.P("This dashboard was made collaboratively by the DSCI 532 Group 202 in 2019.",
-        style={'color' : colors["ubc_blue"]})
+        style={'color' : colors["ubc_blue"]}),
+        dcc.Link('Data Source ', href='https://www.kaggle.com/ankkur13/boston-crime-data'),
+        html.Br(),
+        dcc.Link('Github Repo', href='https://github.com/UBC-MDS/DSCI-532_gr202_dashboard')
     ]),
 
     dcc.Markdown('''
@@ -236,3 +242,4 @@ def update_bar_plot(year_value, neighbourhood_value, crime_value):
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+
