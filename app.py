@@ -47,7 +47,7 @@ df = df.query('~((YEAR == 2015 & MONTH ==6) | (YEAR == 2018 & MONTH == 9))')
 
 
 ## FUNCTIONS
-def chart_filter(df, year = None, month = None, neighbourhood = None, crime = None):
+def chart_filter(df, year = None, neighbourhood = None, crime = None):
     filtered_df = df
     if year != None:
         if type(year) == list:
@@ -55,12 +55,6 @@ def chart_filter(df, year = None, month = None, neighbourhood = None, crime = No
             filtered_df = filtered_df.query('YEAR == %s' % year_list)
         else:
             filtered_df = filtered_df.query('YEAR == %s' % year)
-    if month != None:
-        if type(month) == list:
-            month_list = list(range(month[0], month[1]+1))
-            filtered_df = filtered_df.query('MONTH == %s' % month_list)
-        else:
-            filtered_df = filtered_df.query('MONTH == %s' % month)
     if neighbourhood != None:
         if neighbourhood == []:
             neighbourhood = None
@@ -255,8 +249,8 @@ alt.themes.register('mds_special', mds_special)
 alt.themes.enable('mds_special')
 
 ## wrap all the other functions
-def make_choro_plot(df, gdf, year = None, month = None, neighbourhood = None, crime = None):
-    df = chart_filter(df, year = year, month = month, crime = crime)
+def make_choro_plot(df, gdf, year = None, neighbourhood = None, crime = None):
+    df = chart_filter(df, year = year, crime = crime)
     gdf = create_merged_gdf(df, gdf, neighbourhood = neighbourhood)
     choro_data = create_geo_data(gdf)
     return  boston_map(choro_data)
@@ -266,12 +260,12 @@ def make_trend_plot(df, year = None, neighbourhood = None, crime = None):
     single_year = year_filter(year = year)
     return  trendgraph(df, filter_1_year = single_year)
 
-def make_heatmap_plot(df, year = None, month = None, neighbourhood = None, crime = None):
-    df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood, crime = crime)
+def make_heatmap_plot(df, year = None,neighbourhood = None, crime = None):
+    df = chart_filter(df, year = year, neighbourhood = neighbourhood, crime = crime)
     return  heatmap(df)
 
-def make_bar_plot(df, year = None, month = None, neighbourhood = None, crime=None):
-    df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood, crime=crime)
+def make_bar_plot(df, year = None, neighbourhood = None, crime=None):
+    df = chart_filter(df, year = year, neighbourhood = neighbourhood, crime=crime)
     return  crime_bar_chart(df)
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -315,28 +309,6 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
                     value=[2015,2018],
             ),
             html.Br(),
-            html.P("Filter by Month"),
-            dcc.RangeSlider(
-                id = 'month-slider',
-                min=1,
-                max=12,
-                step=1,
-                marks={
-                    1: 'Jan',
-                    2: '',
-                    3: '',
-                    4: '',
-                    5: '',
-                    6: 'June',
-                    7: '',
-                    8: '',
-                    9: '',
-                    10: '',
-                    11: '',
-                    12: 'Dec'
-                    },
-                value=[1,12],
-                ),
 
             
 
@@ -517,12 +489,11 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
 @app.callback(
         dash.dependencies.Output('choro-plot', 'srcDoc'),
        [dash.dependencies.Input('year-slider', 'value'),
-       dash.dependencies.Input('month-slider', 'value'),
        dash.dependencies.Input('neighbourhood-dropdown', 'value'),
        dash.dependencies.Input('crime-dropdown', 'value')])
 
-def update_choro_plot(year_value, month_value, neighbourhood_value, crime_value):
-    return make_choro_plot(df, gdf, year = year_value, month = month_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
+def update_choro_plot(year_value, neighbourhood_value, crime_value):
+    return make_choro_plot(df, gdf, year = year_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
     
 @app.callback(
         dash.dependencies.Output('trend-plot', 'srcDoc'),
@@ -536,23 +507,22 @@ def update_trend_plot(year_value, neighbourhood_value, crime_value):
 @app.callback(
         dash.dependencies.Output('heatmap-plot', 'srcDoc'),
        [dash.dependencies.Input('year-slider', 'value'),
-       dash.dependencies.Input('month-slider', 'value'),
        dash.dependencies.Input('neighbourhood-dropdown', 'value'),
        dash.dependencies.Input('crime-dropdown', 'value')])
 
-def update_heatmap_plot(year_value, month_value, neighbourhood_value, crime_value):
-    return make_heatmap_plot(df, year = year_value, month = month_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
+def update_heatmap_plot(year_value, neighbourhood_value, crime_value):
+    return make_heatmap_plot(df, year = year_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
     
 
 @app.callback(
         dash.dependencies.Output('bar-plot', 'srcDoc'),
        [dash.dependencies.Input('year-slider', 'value'),
-       dash.dependencies.Input('month-slider', 'value'),
        dash.dependencies.Input('neighbourhood-dropdown', 'value'),
        dash.dependencies.Input('crime-dropdown', 'value')])
 
-def update_bar_plot(year_value, month_value, neighbourhood_value, crime_value):
-    return make_bar_plot(df, year = year_value, month = month_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
+def update_bar_plot(year_value, neighbourhood_value, crime_value):
+    return make_bar_plot(df, year = year_value, neighbourhood = neighbourhood_value, crime = crime_value).to_html()
 
 if __name__ == '__main__':
     app.run_server(debug=True)
+
