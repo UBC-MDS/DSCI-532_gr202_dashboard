@@ -87,13 +87,12 @@ def year_filter(year = None):
 # create the geo pandas merged dataframe
 def create_merged_gdf(df, gdf, neighbourhood):
     df = df.groupby(by = 'DISTRICT').agg("count")
-    if neighbourhood != []:
-        if neighbourhood != None:
-            neighbourhood = list(neighbourhood)
-            for index_label, row_series in df.iterrows():
-            # For each row update the 'Bonus' value to it's double
-                if index_label not in neighbourhood:
-                    df.at[index_label , 'YEAR'] = None
+    if neighbourhood != None:
+        neighbourhood = list(neighbourhood)
+        for index_label, row_series in df.iterrows():
+        # For each row update the 'Bonus' value to it's double
+            if index_label not in neighbourhood:
+                df.at[index_label , 'YEAR'] = None
     gdf = gdf.merge(df, left_on='Name', right_on='DISTRICT', how='inner')
     return gdf
 
@@ -113,7 +112,7 @@ def gen_map(geodata, color_column, title, tooltip):
         strokeWidth=1
     ).encode(
     ).properties(
-        width=350,
+        width=500,
         height=300
     )
     # Add Choropleth Layer
@@ -131,7 +130,13 @@ def gen_map(geodata, color_column, title, tooltip):
 
 # create plot functions
 def crime_bar_chart(df):
-
+    #    df_year = df.query('YEAR == @year')
+    #    if (district != None):
+    #        df_year = df_year.query('DISTRICT == @district')
+    #    df_year = df_year.query('MONTH == @month')
+    #    df_year_smaller = df_year[["OFFENSE_CODE_GROUP", "DISTRICT", "SHOOTING", "YEAR",
+    #                      "MONTH", "DAY_OF_WEEK", "HOUR", "STREET", "Lat", "Long", "Location"]]
+    
     df_year_grouped = df.groupby('OFFENSE_CODE_GROUP').size().sort_values(ascending = False)[:10]
     df = df[df['OFFENSE_CODE_GROUP'].isin(df_year_grouped.index)]
     
@@ -140,7 +145,7 @@ def crime_bar_chart(df):
         x = alt.Y('count():Q', title = "Crime Count"),
         tooltip = [alt.Tooltip('OFFENSE_CODE_GROUP:O', title = 'Crime'),
                     alt.Tooltip('count():Q', title = 'Crime Count')]
-    ).properties(title = "Crime Count by Type", width=250, height=250)
+    ).properties(title = "Crime Count by Type", width=400, height=250)
     return crime_type_chart
 
 def boston_map(df):
@@ -173,7 +178,7 @@ def trendgraph(df, filter_1_year = True):
         tooltip = [alt.Tooltip('YEAR:O', title = 'Year'),
                    alt.Tooltip('MONTH:O', title = 'Month'),
                     alt.Tooltip('OFFENSE_CODE_GROUP:Q', title = 'Crime Count')]
-    ).properties(title = "Crime Trend", width=350, height=250)
+    ).properties(title = "Crime Trend", width=500, height=250)
     return trendgraph + trendgraph.mark_point()
 
 def heatmap(df):
@@ -188,7 +193,7 @@ def heatmap(df):
         tooltip = [alt.Tooltip('DAY_OF_WEEK:O', title = 'Day'),
                    alt.Tooltip('HOUR:O', title = 'Hour'),
                     alt.Tooltip('count()', title = 'Crime Count')]
-    ).properties(title = "Occurence of Crime by Hour and Day", width=200, height=250
+    ).properties(title = "Occurence of Crime by Hour and Day", width=400, height=250
     ).configure_legend(labelFontSize=14, titleFontSize=16)
     return heatmap
 
@@ -363,75 +368,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
             html.P("Filter by Crime"),
             dcc.Dropdown(
                 id = 'crime-dropdown',
-                    options=[
-                        {'label': 'Aggravated Assault', 'value': 'Aggravated Assault'} ,
-                        {'label': 'Aircraft', 'value': 'Aircraft'} ,
-                        {'label': 'Arson', 'value': 'Arson'} ,
-                        {'label': 'Assembly or Gathering Violations', 'value': 'Assembly or Gathering Violations'} ,
-                        {'label': 'Auto Theft', 'value': 'Auto Theft'} ,
-                        {'label': 'Auto Theft Recovery', 'value': 'Auto Theft Recovery'} ,
-                        {'label': 'Ballistics', 'value': 'Ballistics'} ,
-                        {'label': 'Biological Threat', 'value': 'Biological Threat'} ,
-                        {'label': 'Bomb Hoax', 'value': 'Bomb Hoax'} ,
-                        {'label': 'Burglary - No Property Taken', 'value': 'Burglary - No Property Taken'} ,
-                        {'label': 'Commercial Burglary', 'value': 'Commercial Burglary'} ,
-                        {'label': 'Confidence Games', 'value': 'Confidence Games'} ,
-                        {'label': 'Counterfeiting', 'value': 'Counterfeiting'} ,
-                        {'label': 'Criminal Harassment', 'value': 'Criminal Harassment'} ,
-                        {'label': 'Disorderly Conduct', 'value': 'Disorderly Conduct'} ,
-                        {'label': 'Drug Violation', 'value': 'Drug Violation'} ,
-                        {'label': 'Embezzlement', 'value': 'Embezzlement'} ,
-                        {'label': 'Evading Fare', 'value': 'Evading Fare'} ,
-                        {'label': 'Explosives', 'value': 'Explosives'} ,
-                        {'label': 'Fire Related Reports', 'value': 'Fire Related Reports'} ,
-                        {'label': 'Firearm Discovery', 'value': 'Firearm Discovery'} ,
-                        {'label': 'Firearm Violations', 'value': 'Firearm Violations'} ,
-                        {'label': 'Fraud', 'value': 'Fraud'} ,
-                        {'label': 'Gambling', 'value': 'Gambling'} ,
-                        {'label': 'Home Invasion', 'value': 'HOME INVASION'} ,
-                        {'label': 'Human Trafficking', 'value': 'HUMAN TRAFFICKING'} ,
-                        {'label': 'Human Trafficking - Involuntary Servitude', 'value': 'HUMAN TRAFFICKING - INVOLUNTARY SERVITUDE'} ,
-                        {'label': 'Harassment', 'value': 'Harassment'} ,
-                        {'label': 'Harbor Related Incidents', 'value': 'Harbor Related Incidents'} ,
-                        {'label': 'Homicide', 'value': 'Homicide'} ,
-                        {'label': 'Investigate Person', 'value': 'INVESTIGATE PERSON'} ,
-                        {'label': 'Investigate Person', 'value': 'Investigate Person'} ,
-                        {'label': 'Investigate Property', 'value': 'Investigate Property'} ,
-                        {'label': 'Landlord/Tenant Disputes', 'value': 'Landlord/Tenant Disputes'} ,
-                        {'label': 'Larceny', 'value': 'Larceny'} ,
-                        {'label': 'Larceny From Motor Vehicle', 'value': 'Larceny From Motor Vehicle'} ,
-                        {'label': 'License Plate Related Incidents', 'value': 'License Plate Related Incidents'} ,
-                        {'label': 'License Violation', 'value': 'License Violation'} ,
-                        {'label': 'Liquor Violation', 'value': 'Liquor Violation'} ,
-                        {'label': 'Manslaughter', 'value': 'Manslaughter'} ,
-                        {'label': 'Medical Assistance', 'value': 'Medical Assistance'} ,
-                        {'label': 'Missing Person Located', 'value': 'Missing Person Located'} ,
-                        {'label': 'Missing Person Reported', 'value': 'Missing Person Reported'} ,
-                        {'label': 'Motor Vehicle Accident', 'value': 'Motor Vehicle Accident Response'} ,
-                        {'label': 'Offenses Against Child/Family', 'value': 'Offenses Against Child / Family'} ,
-                        {'label': 'Operating Under the Influence', 'value': 'Operating Under the Influence'} ,
-                        {'label': 'Other', 'value': 'Other'} ,
-                        {'label': 'Other Burglary', 'value': 'Other Burglary'} ,
-                        {'label': 'Phone Call Complaints', 'value': 'Phone Call Complaints'} ,
-                        {'label': 'Police Service Incidents', 'value': 'Police Service Incidents'} ,
-                        {'label': 'Prisoner Related Incidents', 'value': 'Prisoner Related Incidents'} ,
-                        {'label': 'Property Found', 'value': 'Property Found'} ,
-                        {'label': 'Property Lost', 'value': 'Property Lost'} ,
-                        {'label': 'Property Related Damage', 'value': 'Property Related Damage'} ,
-                        {'label': 'Prostitution', 'value': 'Prostitution'} ,
-                        {'label': 'Recovered Stolen Property', 'value': 'Recovered Stolen Property'} ,
-                        {'label': 'Residential Burglary', 'value': 'Residential Burglary'} ,
-                        {'label': 'Restraining Order Violations', 'value': 'Restraining Order Violations'} ,
-                        {'label': 'Robbery', 'value': 'Robbery'} ,
-                        {'label': 'Search Warrants', 'value': 'Search Warrants'} ,
-                        {'label': 'Service', 'value': 'Service'} ,
-                        {'label': 'Simple Assault', 'value': 'Simple Assault'} ,
-                        {'label': 'Towed', 'value': 'Towed'} ,
-                        {'label': 'Vandalism', 'value': 'Vandalism'} ,
-                        {'label': 'Verbal Disputes', 'value': 'Verbal Disputes'} ,
-                        {'label': 'Violations', 'value': 'Violations'} ,
-                        {'label': 'Warrant Arrests', 'value': 'Warrant Arrests'}
-                    ],
+                    options=[{'label': crime.title(), 'value': crime} for crime in df['OFFENSE_CODE_GROUP']],
                     value=None, style=dict(width='100%'),
                     multi=True
                     ),
@@ -468,7 +405,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
                     sandbox='allow-scripts',
                     id='choro-plot',
                     height='400',
-                    width='500',
+                    width='700',
                     style={'border-width': '0px'},
                     ),
 
@@ -476,7 +413,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
                     sandbox='allow-scripts',
                     id='trend-plot',
                     height='400',
-                    width='500',
+                    width='700',
                     style={'border-width': '0px'},
                     ),
 
@@ -488,7 +425,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
                     sandbox='allow-scripts',
                     id='heatmap-plot',
                     height='400',
-                    width='500',
+                    width='700',
                     style={'border-width': '0px'},
                     ),
                 
@@ -496,7 +433,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
                     sandbox='allow-scripts',
                     id='bar-plot',
                     height='400',
-                    width='500',
+                    width='700',
                     style={'border-width': '0px'},
                     ),
 
@@ -504,12 +441,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
             
             ]),
     
-        ]),
-    # FOOTER
-    html.Div(className = 'row', style = {'backgroundColor': colors["light_grey"], "padding" : 4}, children = [
-        html.P("This dashboard was made collaboratively by the DSCI 532 Group 202 in 2019.",
-        style={'color' : colors["ubc_blue"]})
-    ]),
+        ])
 ])
 
 @app.callback(
