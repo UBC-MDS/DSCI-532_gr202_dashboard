@@ -268,6 +268,13 @@ def make_bar_plot(df, year = None, neighbourhood = None, crime=None):
     df = chart_filter(df, year = year, neighbourhood = neighbourhood, crime=crime)
     return  crime_bar_chart(df)
 
+# for dictionary comprehension
+crime_list = list(df['OFFENSE_CODE_GROUP'].unique())
+crime_list.sort()
+neighbourhood_list = list(df['DISTRICT'].unique())
+neighbourhood_list = [x for x in neighbourhood_list if str(x) != 'nan']
+neighbourhood_list.sort()
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
@@ -285,7 +292,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
     # HEADER
     html.Div(className = 'row', style = {'backgroundColor': colors["ubc_blue"], "padding" : 10}, children = [
         html.H2('Boston Crime Dashboard', style={'color' : colors["white"]}),
-        html.P("This Dash app allows users to explore and analyze crime trends in Boston. The data set consists of over 300,000 Boston crime records between 2015 and 2018. Simply drag the sliders to select your desired time range. Select one or multiple values from the drop down menus to select which neighbourhoods or crimes you would like to explore. These options will filter all the graphs in the dashboard, with the exception of the Crime Trend plot which has a static month selection.",
+        html.P("This Dash app will allow users to explore crime in Boston acrosss time and space. The data set consists of over 300,000 Boston crime records between 2015 and 2018. Simply drag the sliders to select your desired year range. Select one or multiple values from the drop down menus to select which neighbourhoods or crimes you would like to explore. These options will filter all the graphs in the dashboard.",
         style={'color' : colors["white"]})
     ]),
     
@@ -316,19 +323,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
             html.P("Filter by Neighbourhood"),
             dcc.Dropdown(
                 id = 'neighbourhood-dropdown',
-                    options=[
-                        {'label': 'Brighton', 'value': 'Brighton'},
-                        {'label': 'Dorchester', 'value': 'Dorchester'},
-                        {'label': 'Downtown', 'value': 'Downtown'},
-                        {'label': 'East Boston', 'value': 'East Boston'},
-                        {'label': 'Hyde Park', 'value': 'Hyde Park'},
-                        {'label': 'Jamaica Plain', 'value': 'Jamaica Plain'},
-                        {'label': 'Mattapan', 'value': 'Mattapan'},
-                        {'label': 'Roxbury', 'value': 'Roxbury'},                
-                        {'label': 'South Boston', 'value': 'South Boston'},                
-                        {'label': 'South End', 'value': 'South End'},                
-                        {'label': 'West Roxbury', 'value': 'West Roxbury'}                
-                    ],
+                    options=[{'label': neighbourhood.title(), 'value': neighbourhood} for neighbourhood in neighbourhood_list],
                     value=None, style=dict(width='100%'),
                     multi=True          
                     ),
@@ -337,7 +332,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
             html.P("Filter by Crime"),
             dcc.Dropdown(
                 id = 'crime-dropdown',
-                    options=[{'label': crime.title(), 'value': crime} for crime in df['OFFENSE_CODE_GROUP']],
+                    options=[{'label': crime.title(), 'value': crime} for crime in crime_list],
                     value=None, style=dict(width='100%'),
                     multi=True
                     ),
