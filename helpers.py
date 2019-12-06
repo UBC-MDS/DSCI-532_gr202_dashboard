@@ -438,3 +438,15 @@ def make_bar_plot(df, year = None, month = None, neighbourhood = None, crime=Non
     """
     df = chart_filter(df, year = year, month = month, neighbourhood = neighbourhood, crime=crime)
     return  crime_bar_chart(df)
+
+geo_json_file_loc= 'data/Boston_Neighborhoods.geojson'
+
+def open_geojson():
+    with open(geo_json_file_loc) as json_data:
+        d = json.load(json_data)
+    return d
+
+def get_gpd_df():
+    boston_json = open_geojson()
+    gdf = gpd.GeoDataFrame.from_features((boston_json))
+    return gdf
