@@ -6,6 +6,8 @@ import altair as alt
 import pandas as pd
 import geopandas as gpd
 import json
+import dash_core_components as dcc
+
 alt.data_transformers.disable_max_rows()
 # alt.data_transformers.enable('json')
 alt.data_transformers.enable('data_server')
@@ -484,6 +486,10 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
         html.P("This dashboard was made collaboratively by the DSCI 532 Group 202 in 2019.",
         style={'color' : colors["ubc_blue"]})
     ]),
+
+    dcc.Markdown('''
+        [Data Source](https://www.kaggle.com/ankkur13/boston-crime-data)
+    ''') 
 ])
 
 @app.callback(
