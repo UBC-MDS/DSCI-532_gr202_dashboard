@@ -25,7 +25,7 @@ def get_gpd_df():
 
 gdf = get_gpd_df()
 # Import boston crimes
-df = pd.read_csv("data/crime.csv", encoding = 'latin-1', )
+df = pd.read_csv("data/crime.csv", encoding = 'latin-1')
 # filter for needed columns
 df = df[["DISTRICT", "YEAR", "MONTH", "DAY_OF_WEEK", "HOUR", "OFFENSE_CODE_GROUP"]]
 # map district to neighbourhoods
@@ -42,6 +42,8 @@ df['DISTRICT'] = df['DISTRICT'].replace(
                                  'E5': 'West Roxbury',
                                  'E13': 'Jamaica Plain',
                                  'E18': 'Hyde Park'})
+# filter out incomplete data from 1st and last month 
+df = df.query('~((YEAR == 2015 & MONTH ==6) | (YEAR == 2018 & MONTH == 9))')
 
 
 ## FUNCTIONS
