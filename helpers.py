@@ -243,7 +243,7 @@ def trendgraph(df, filter_1_year = True):
     if filter_1_year == True:
         year_format = "%b"
     else:
-        year_format = "%b %y"
+        year_format = "%b %Y"
     trendgraph = alt.Chart(dfg
     ).mark_line().encode(
         x = alt.X("date:T", 
