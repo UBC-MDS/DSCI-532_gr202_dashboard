@@ -7,7 +7,6 @@ import pandas as pd
 import geopandas as gpd
 import json
 import dash_core_components as dcc
-
 from helpers import *
 
 
@@ -48,7 +47,14 @@ alt.themes.register('mds_special', mds_special)
 # enable the newly registered theme
 alt.themes.enable('mds_special')
 
-# comment
+# for dictionary comprehension
+crime_list = list(df['OFFENSE_CODE_GROUP'].unique())
+crime_list.sort()
+neighbourhood_list = list(df['DISTRICT'].unique())
+neighbourhood_list = [x for x in neighbourhood_list if str(x) != 'nan']
+neighbourhood_list.sort()
+
+
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
@@ -66,7 +72,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
     # HEADER
     html.Div(className = 'row', style = {'backgroundColor': colors["ubc_blue"], "padding" : 10}, children = [
         html.H2('Boston Crime Dashboard', style={'color' : colors["white"]}),
-        html.P("This Dash app allows users to explore and analyze crime trends in Boston. The data set consists of over 300,000 Boston crime records between 2015 and 2018. Simply drag the sliders to select your desired time range. Select one or multiple values from the drop down menus to select which neighbourhoods or crimes you would like to explore. These options will filter all the graphs in the dashboard, with the exception of the Crime Trend plot which has a static month selection.",
+        html.P("This Dash app will allow users to explore crime in Boston acrosss time and space. The data set consists of over 300,000 Boston crime records between 2015 and 2018. Simply drag the sliders to select your desired year range. Select one or multiple values from the drop down menus to select which neighbourhoods or crimes you would like to explore. These options will filter all the graphs in the dashboard.",
         style={'color' : colors["white"]})
     ]),
     
@@ -97,19 +103,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
             html.P("Filter by Neighbourhood"),
             dcc.Dropdown(
                 id = 'neighbourhood-dropdown',
-                    options=[
-                        {'label': 'Brighton', 'value': 'Brighton'},
-                        {'label': 'Dorchester', 'value': 'Dorchester'},
-                        {'label': 'Downtown', 'value': 'Downtown'},
-                        {'label': 'East Boston', 'value': 'East Boston'},
-                        {'label': 'Hyde Park', 'value': 'Hyde Park'},
-                        {'label': 'Jamaica Plain', 'value': 'Jamaica Plain'},
-                        {'label': 'Mattapan', 'value': 'Mattapan'},
-                        {'label': 'Roxbury', 'value': 'Roxbury'},                
-                        {'label': 'South Boston', 'value': 'South Boston'},                
-                        {'label': 'South End', 'value': 'South End'},                
-                        {'label': 'West Roxbury', 'value': 'West Roxbury'}                
-                    ],
+                    options=[{'label': neighbourhood.title(), 'value': neighbourhood} for neighbourhood in neighbourhood_list],
                     value=None, style=dict(width='100%'),
                     multi=True          
                     ),
@@ -118,75 +112,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
             html.P("Filter by Crime"),
             dcc.Dropdown(
                 id = 'crime-dropdown',
-                    options=[
-                        {'label': 'Aggravated Assault', 'value': 'Aggravated Assault'} ,
-                        {'label': 'Aircraft', 'value': 'Aircraft'} ,
-                        {'label': 'Arson', 'value': 'Arson'} ,
-                        {'label': 'Assembly or Gathering Violations', 'value': 'Assembly or Gathering Violations'} ,
-                        {'label': 'Auto Theft', 'value': 'Auto Theft'} ,
-                        {'label': 'Auto Theft Recovery', 'value': 'Auto Theft Recovery'} ,
-                        {'label': 'Ballistics', 'value': 'Ballistics'} ,
-                        {'label': 'Biological Threat', 'value': 'Biological Threat'} ,
-                        {'label': 'Bomb Hoax', 'value': 'Bomb Hoax'} ,
-                        {'label': 'Burglary - No Property Taken', 'value': 'Burglary - No Property Taken'} ,
-                        {'label': 'Commercial Burglary', 'value': 'Commercial Burglary'} ,
-                        {'label': 'Confidence Games', 'value': 'Confidence Games'} ,
-                        {'label': 'Counterfeiting', 'value': 'Counterfeiting'} ,
-                        {'label': 'Criminal Harassment', 'value': 'Criminal Harassment'} ,
-                        {'label': 'Disorderly Conduct', 'value': 'Disorderly Conduct'} ,
-                        {'label': 'Drug Violation', 'value': 'Drug Violation'} ,
-                        {'label': 'Embezzlement', 'value': 'Embezzlement'} ,
-                        {'label': 'Evading Fare', 'value': 'Evading Fare'} ,
-                        {'label': 'Explosives', 'value': 'Explosives'} ,
-                        {'label': 'Fire Related Reports', 'value': 'Fire Related Reports'} ,
-                        {'label': 'Firearm Discovery', 'value': 'Firearm Discovery'} ,
-                        {'label': 'Firearm Violations', 'value': 'Firearm Violations'} ,
-                        {'label': 'Fraud', 'value': 'Fraud'} ,
-                        {'label': 'Gambling', 'value': 'Gambling'} ,
-                        {'label': 'Home Invasion', 'value': 'HOME INVASION'} ,
-                        {'label': 'Human Trafficking', 'value': 'HUMAN TRAFFICKING'} ,
-                        {'label': 'Human Trafficking - Involuntary Servitude', 'value': 'HUMAN TRAFFICKING - INVOLUNTARY SERVITUDE'} ,
-                        {'label': 'Harassment', 'value': 'Harassment'} ,
-                        {'label': 'Harbor Related Incidents', 'value': 'Harbor Related Incidents'} ,
-                        {'label': 'Homicide', 'value': 'Homicide'} ,
-                        {'label': 'Investigate Person', 'value': 'INVESTIGATE PERSON'} ,
-                        {'label': 'Investigate Person', 'value': 'Investigate Person'} ,
-                        {'label': 'Investigate Property', 'value': 'Investigate Property'} ,
-                        {'label': 'Landlord/Tenant Disputes', 'value': 'Landlord/Tenant Disputes'} ,
-                        {'label': 'Larceny', 'value': 'Larceny'} ,
-                        {'label': 'Larceny From Motor Vehicle', 'value': 'Larceny From Motor Vehicle'} ,
-                        {'label': 'License Plate Related Incidents', 'value': 'License Plate Related Incidents'} ,
-                        {'label': 'License Violation', 'value': 'License Violation'} ,
-                        {'label': 'Liquor Violation', 'value': 'Liquor Violation'} ,
-                        {'label': 'Manslaughter', 'value': 'Manslaughter'} ,
-                        {'label': 'Medical Assistance', 'value': 'Medical Assistance'} ,
-                        {'label': 'Missing Person Located', 'value': 'Missing Person Located'} ,
-                        {'label': 'Missing Person Reported', 'value': 'Missing Person Reported'} ,
-                        {'label': 'Motor Vehicle Accident', 'value': 'Motor Vehicle Accident Response'} ,
-                        {'label': 'Offenses Against Child/Family', 'value': 'Offenses Against Child / Family'} ,
-                        {'label': 'Operating Under the Influence', 'value': 'Operating Under the Influence'} ,
-                        {'label': 'Other', 'value': 'Other'} ,
-                        {'label': 'Other Burglary', 'value': 'Other Burglary'} ,
-                        {'label': 'Phone Call Complaints', 'value': 'Phone Call Complaints'} ,
-                        {'label': 'Police Service Incidents', 'value': 'Police Service Incidents'} ,
-                        {'label': 'Prisoner Related Incidents', 'value': 'Prisoner Related Incidents'} ,
-                        {'label': 'Property Found', 'value': 'Property Found'} ,
-                        {'label': 'Property Lost', 'value': 'Property Lost'} ,
-                        {'label': 'Property Related Damage', 'value': 'Property Related Damage'} ,
-                        {'label': 'Prostitution', 'value': 'Prostitution'} ,
-                        {'label': 'Recovered Stolen Property', 'value': 'Recovered Stolen Property'} ,
-                        {'label': 'Residential Burglary', 'value': 'Residential Burglary'} ,
-                        {'label': 'Restraining Order Violations', 'value': 'Restraining Order Violations'} ,
-                        {'label': 'Robbery', 'value': 'Robbery'} ,
-                        {'label': 'Search Warrants', 'value': 'Search Warrants'} ,
-                        {'label': 'Service', 'value': 'Service'} ,
-                        {'label': 'Simple Assault', 'value': 'Simple Assault'} ,
-                        {'label': 'Towed', 'value': 'Towed'} ,
-                        {'label': 'Vandalism', 'value': 'Vandalism'} ,
-                        {'label': 'Verbal Disputes', 'value': 'Verbal Disputes'} ,
-                        {'label': 'Violations', 'value': 'Violations'} ,
-                        {'label': 'Warrant Arrests', 'value': 'Warrant Arrests'}
-                    ],
+                    options=[{'label': crime.title(), 'value': crime} for crime in crime_list],
                     value=None, style=dict(width='100%'),
                     multi=True
                     ),
