@@ -442,11 +442,22 @@ def make_bar_plot(df, year = None, month = None, neighbourhood = None, crime=Non
 geo_json_file_loc= 'data/Boston_Neighborhoods.geojson'
 
 def open_geojson():
+    """
+    Opens geojson file
+    """
     with open(geo_json_file_loc) as json_data:
         d = json.load(json_data)
     return d
 
 def get_gpd_df():
+    """
+    Creates a geopandas dataframe object
+
+    Parameters
+    ----------
+    df : Pandas Data Frame
+        Dataframe of crime data
+    """
     boston_json = open_geojson()
     gdf = gpd.GeoDataFrame.from_features((boston_json))
     return gdf
