@@ -87,12 +87,13 @@ def year_filter(year = None):
 # create the geo pandas merged dataframe
 def create_merged_gdf(df, gdf, neighbourhood):
     df = df.groupby(by = 'DISTRICT').agg("count")
-    if neighbourhood != None:
-        neighbourhood = list(neighbourhood)
-        for index_label, row_series in df.iterrows():
-        # For each row update the 'Bonus' value to it's double
-            if index_label not in neighbourhood:
-                df.at[index_label , 'YEAR'] = None
+    if neighbourhood != []:
+        if neighbourhood != None:
+            neighbourhood = list(neighbourhood)
+            for index_label, row_series in df.iterrows():
+            # For each row update the 'Bonus' value to it's double
+                if index_label not in neighbourhood:
+                    df.at[index_label , 'YEAR'] = None
     gdf = gdf.merge(df, left_on='Name', right_on='DISTRICT', how='inner')
     return gdf
 
@@ -112,7 +113,7 @@ def gen_map(geodata, color_column, title, tooltip):
         strokeWidth=1
     ).encode(
     ).properties(
-        width=300,
+        width=350,
         height=300
     )
     # Add Choropleth Layer
@@ -123,39 +124,34 @@ def gen_map(geodata, color_column, title, tooltip):
         alt.Color(color_column, 
                   type='quantitative', 
                   scale=alt.Scale(),
-                  title = "Crime Counts"),
+                  title = "Crime Count"),
          tooltip=tooltip
     )
     return base + choro
 
 # create plot functions
 def crime_bar_chart(df):
-    #    df_year = df.query('YEAR == @year')
-    #    if (district != None):
-    #        df_year = df_year.query('DISTRICT == @district')
-    #    df_year = df_year.query('MONTH == @month')
-    #    df_year_smaller = df_year[["OFFENSE_CODE_GROUP", "DISTRICT", "SHOOTING", "YEAR",
-    #                      "MONTH", "DAY_OF_WEEK", "HOUR", "STREET", "Lat", "Long", "Location"]]
-    
+
     df_year_grouped = df.groupby('OFFENSE_CODE_GROUP').size().sort_values(ascending = False)[:10]
     df = df[df['OFFENSE_CODE_GROUP'].isin(df_year_grouped.index)]
     
     crime_type_chart = alt.Chart(df).mark_bar().encode(
         y = alt.X('OFFENSE_CODE_GROUP:O', title = "Crime", sort=alt.EncodingSortField(op="count", order='descending')),
-        x = alt.Y('count():Q', title = "Number of Crimes"),
+        x = alt.Y('count():Q', title = "Crime Count"),
         tooltip = [alt.Tooltip('OFFENSE_CODE_GROUP:O', title = 'Crime'),
                     alt.Tooltip('count():Q', title = 'Crime Count')]
-    ).properties(title = "Crime Counts by Type")
+    ).properties(title = "Crime Count by Type", width=250, height=250)
     return crime_type_chart
 
 def boston_map(df):
     boston_map = gen_map(geodata = df, 
                         color_column='properties.YEAR', 
                        # color_scheme='yelloworangered',
-                        title = "Crime Counts by Neighbourhood",
+                        title = "Crime Count by Neighbourhood",
                         tooltip = [alt.Tooltip('properties.Name:O', title = 'Neighbourhood'),
                                     alt.Tooltip('properties.YEAR:Q', title = 'Crime Count')]
-    ).configure_legend(labelFontSize=14, titleFontSize=16)
+    ).configure_legend(labelFontSize=14, titleFontSize=16
+    ).configure_view(strokeOpacity=0)
     return boston_map
 
 
@@ -173,11 +169,11 @@ def trendgraph(df, filter_1_year = True):
         x = alt.X("date:T", 
                   title = "Date",
                  axis = alt.Axis(labelAngle = 0, format = year_format)),
-        y = alt.Y('OFFENSE_CODE_GROUP:Q', title = "Occurence of Crime"),
+        y = alt.Y('OFFENSE_CODE_GROUP:Q', title = "Crime Count"),
         tooltip = [alt.Tooltip('YEAR:O', title = 'Year'),
                    alt.Tooltip('MONTH:O', title = 'Month'),
                     alt.Tooltip('OFFENSE_CODE_GROUP:Q', title = 'Crime Count')]
-    ).properties(title = "Crime Trend")
+    ).properties(title = "Crime Trend", width=350, height=250)
     return trendgraph + trendgraph.mark_point()
 
 def heatmap(df):
@@ -192,7 +188,7 @@ def heatmap(df):
         tooltip = [alt.Tooltip('DAY_OF_WEEK:O', title = 'Day'),
                    alt.Tooltip('HOUR:O', title = 'Hour'),
                     alt.Tooltip('count()', title = 'Crime Count')]
-    ).properties(title = "Occurence of Crime by Hour and Day"
+    ).properties(title = "Occurence of Crime by Hour and Day", width=200, height=250
     ).configure_legend(labelFontSize=14, titleFontSize=16)
     return heatmap
 
@@ -211,7 +207,7 @@ def mds_special():
                 },
                 'view': {
                     "height": 300, 
-                    "width": 400
+                    "width": 300
                 },
                 "axisX": {
                     "domain": True,
@@ -293,7 +289,7 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
     # HEADER
     html.Div(className = 'row', style = {'backgroundColor': colors["ubc_blue"], "padding" : 10}, children = [
         html.H2('Boston Crime Dashboard', style={'color' : colors["white"]}),
-        html.P("This is a random blurb about the app, the app will help users explore crime counts in Boston.",
+        html.P("This Dash app allows users to explore and analyze crime trends in Boston. The data set consists of over 300,000 Boston crime records between 2015 and 2018. Simply drag the sliders to select your desired time range. Select one or multiple values from the drop down menus to select which neighbourhoods or crimes you would like to explore. These options will filter all the graphs in the dashboard, with the exception of the Crime Trend plot which has a static month selection.",
         style={'color' : colors["white"]})
     ]),
     
@@ -508,7 +504,12 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
             
             ]),
     
-        ])
+        ]),
+    # FOOTER
+    html.Div(className = 'row', style = {'backgroundColor': colors["light_grey"], "padding" : 4}, children = [
+        html.P("This dashboard was made collaboratively by the DSCI 532 Group 202 in 2019.",
+        style={'color' : colors["ubc_blue"]})
+    ]),
 ])
 
 @app.callback(
