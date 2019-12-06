@@ -8,7 +8,7 @@ import geopandas as gpd
 import json
 alt.data_transformers.disable_max_rows()
 # alt.data_transformers.enable('json')
-#alt.data_transformers.enable('data_server')
+alt.data_transformers.enable('data_server')
 
 # LOAD IN DATASETS
 geo_json_file_loc= 'data/Boston_Neighborhoods.geojson'
@@ -163,7 +163,7 @@ def trendgraph(df, filter_1_year = True):
     if filter_1_year == True:
         year_format = "%b"
     else:
-        year_format = "%b %y"
+        year_format = "%b %Y"
     trendgraph = alt.Chart(dfg
     ).mark_line().encode(
         x = alt.X("date:T", 
