@@ -39,6 +39,6 @@ Some comments from our peers were directly in contradiction to other peers. For 
 
 We found the peer feedback process very helpful, and will look to gather additional feedback from our peers before our milestone 4 submissions.
 
-## Maintenance to App
+### Maintenance to App
 Beyond implementing the above features to our app based on user feedback, we have also done significant refactoring of our code. We have reorganized our app, by abstracting function definitions out of our app.py file to a new separate functions.py helper file. Code hygiene has also been improved by adding detailed docstrings for all functions, and making our code 'Pythonic' when possible (for example, dictionary comprehensions for long dropdown menus). 
 
