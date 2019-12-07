@@ -9,17 +9,11 @@ import json
 import dash_core_components as dcc
 from helpers import *
 
-
 alt.data_transformers.disable_max_rows()
 # alt.data_transformers.enable('json')
 #alt.data_transformers.enable('data_server')
 
 geo_json_file_loc= 'data/Boston_Neighborhoods.geojson'
-<<<<<<< HEAD
-
-=======
->>>>>>> upstream/master
-
 gdf = get_gpd_df()
 # Import boston crimes
 df = pd.read_csv("data/crime.csv", encoding = 'latin-1')
@@ -41,7 +35,6 @@ df['DISTRICT'] = df['DISTRICT'].replace(
                                  'E18': 'Hyde Park'})
 # filter out incomplete data from 1st and last month 
 df = df.query('~((YEAR == 2015 & MONTH ==6) | (YEAR == 2018 & MONTH == 9))')
-
 
 
 # register the custom theme under a chosen name
