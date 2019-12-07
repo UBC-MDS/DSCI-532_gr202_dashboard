@@ -25,7 +25,7 @@ Some comments from our peers were directly in contradiction to other peers. For 
 
 We found the peer feedback process very helpful, and will look to gather additional feedback from our peers before our milestone 4 submissions.
 
-## Wishlist features
+### Wishlist features
 Additionally, we will attempt to implement the following features in milestone 4 based on TA feedback. The timeframe did not allow us to implement these features for milestone 3. 
 - Increase interactivity on our plots, ie. zooming and panning functionalities
 - Normalizing choropleth map to percentages instead of counts. 
