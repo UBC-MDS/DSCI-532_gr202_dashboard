@@ -8,7 +8,7 @@
 ### Internal Critiques
 - The app loads too slowly on Heroku. It takes over 10 seconds to load every single plot. A potential improvement is to subset the dataset. Another solution is to make tabs to house different plots, so all four plots aren’t displayed on the same page.
   - The app loads very quickly locally when altair's data server is enabled with `alt.data_transformers.enable('data_server')`. However, this functionality does not work with Heroku as per our [discussion](https://github.com/altair-viz/altair_data_server/issues/11) with the creator of this function. Creating a `Heroku` data server is a potential solution, but was outside of our technical abilities given the time frame of the milestone. 
-- On a smaller display 13”, the plots can’t be fully displayed, the user has to horizontally scroll the plot in order to see the entire content of the plot. A potential solution for this is to have tabs to house different plots. 
+- The plots' widths had to be decreased in order to be fully displayed on a smaller screen resolution without horizontally scrolling. This results in the heatmap looking a bit squished. A potential solution for this is to have tabs to house different plots. 
   
 ### Peer Feedback and Updates to App
 We received valuable information both from watching our peers interact with our app, and also from their [helpful feedback](https://github.com/UBC-MDS/DSCI-532_gr202_dashboard/issues/54).  Overall, users enjoyed our aesthetics and the functionality of the app, and for the most part used the app as we had intended. However, a few specific areas of improvement were noted, which we address below: 
@@ -25,7 +25,7 @@ Some comments from our peers were directly in contradiction to other peers. For 
 
 We found the peer feedback process very helpful, and will look to gather additional feedback from our peers before our milestone 4 submissions.
 
-## Wishlist features
+### Wishlist features
 Additionally, we will attempt to implement the following features in milestone 4 based on TA feedback. The timeframe did not allow us to implement these features for milestone 3. 
 - Increase interactivity on our plots, ie. zooming and panning functionalities
 - Normalizing choropleth map to percentages instead of counts. 
