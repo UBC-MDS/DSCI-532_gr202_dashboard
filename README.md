@@ -4,8 +4,7 @@
 
 *__Creators__: Mike Chen, Alexander Hinton, Andrea Lee, Yingping Qian*
 
-https://gr202-dashboard-milestone2.herokuapp.com/
- https://gr202-dashboard-milestone3.herokuapp.com/ 
+https://gr202-dashboard-milestone3.herokuapp.com/ 
  
 Boston Crime App is an interactive data visualization application that displays the crimes in Boston between 2015 and 2018 based on the data from the Boston Police Department.
 
