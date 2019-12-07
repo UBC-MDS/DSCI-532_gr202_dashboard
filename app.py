@@ -190,10 +190,6 @@ app.layout = html.Div(style={'backgroundColor': colors['white']}, children = [
         html.Br(),
         dcc.Link('Github Repo', href='https://github.com/UBC-MDS/DSCI-532_gr202_dashboard')
     ]),
-
-    dcc.Markdown('''
-        [Data Source](https://www.kaggle.com/ankkur13/boston-crime-data), [Github Repo](https://github.com/UBC-MDS/DSCI-532_gr202_dashboard)
-    ''') 
 ])
 
 @app.callback(
