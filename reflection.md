@@ -38,5 +38,5 @@ We have done significant refactoring of our code. The app file structure has bee
 - Teammate Issues 
   - Whenever a team member spotted a bug or issue related to the app, they created a GitHub issue ([example](https://github.com/UBC-MDS/DSCI-532_gr202_dashboard/issues/41)). A succinct and descriptive message regarding the problem is written. In which, other team members can attempt to fix the problem. After the problem is fixed, the specific commit was referenced to that issue. 
 - TA Issues
-  - Teamwork contract has been updated in the individual repo to be more specific as per the request of the TA[https://github.com/UBC-MDS/DSCI-532_gr202_dashboard/issues/40].
+  - Teamwork contract has been updated in the individual repo to be more specific as per the request of the [TA](https://github.com/UBC-MDS/DSCI-532_gr202_dashboard/issues/40).
   - [Proposal](https://github.com/UBC-MDS/DSCI-532_gr202_dashboard/blob/master/Proposal.md) has been updated to reference count instead of density and count instead of rates. 
