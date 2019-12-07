@@ -1,4 +1,4 @@
-## Reflections for Milestone 2
+## Reflections on Milestone 3
 ### What the dashboard does well
 - The app is aesthetically pleasing. Matching colour scheme across the dropdown menus, sliders and the plots themselves. Unique visualizations such as the choropleth of Boston and heatmap are visually pleasing and informative. The app layout allows the user to see every single plot at the same time, but also it gives the user access to the dropdown menus while being able to see every single plot. That way the user can instantly see the change in each plot, a filter is applied.  
 - The app incorporates a wide range of different visualizations in order to deliver a wide range of information regarding crime in Boston. 
@@ -24,8 +24,6 @@
   - Fixed references of 'density' to 'count' and 'rates' to 'count' in proposal and REAMDE to reflect updated project scope.
   - Updated Team Contract in personal repos, to be more specific about the division of work and deadlines. 
   
- 
-## Reflections for Milestone 3
 ### Peer Feedback and Updates to App
 We received valuable information both from watching our peers interact with our app, and also from their helpful feedback.  Overall, users enjoyed our aesthetics and the functionality of the app, and for the most part used the app as we had intended. However, a few specific areas of improvement were noted, which we address below: 
 - The major complaint with the app, which was consistent across all reviewers was that our app deployment on Heroku is very slow. We have documented this previously, and are unable to improve at this point, other than by greatly reducing the size of our dataset. However, based on the speed of our static ggplot objects we are hopeful that our implementation in Milestone 4 will be significantly faster.  
